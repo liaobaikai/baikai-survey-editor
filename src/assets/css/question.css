@@ -1,0 +1,515 @@
+table {
+  border-collapse: separate;
+}
+
+.question {
+  font-family: "PingFang SC","Lantinghei SC","Microsoft YaHei","arial","sans-serif";
+}
+
+.question-answer table {
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.question-answer table tr td{
+  border-bottom: 1px solid #f5f5f5;
+  padding: 10px 0;
+}
+
+.question-answer table tr th{
+  padding: 7px 0;
+}
+
+.question-answer table tr:last-child td{
+  border-width: 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.dialog-body{
+  min-height: 350px;
+  height: 350px;
+  overflow: auto;
+  background-color: #f5f5f5;
+}
+
+.dialog-body table{
+  width: 100%;
+}
+
+.dialog-body .rows{
+  margin: 10px;
+}
+
+.dialog-body .rows:first-child{
+  margin-top: 20px;
+}
+.dialog-body .rows:last-child{
+  margin-bottom: 20px;
+}
+
+.dialog-quill-editor .ql-editor{
+  height: 280px !important;
+}
+
+.question-answer .el-radio-group,
+.question-answer .el-input,
+.question-answer .el-textarea,
+.question-answer .el-checkbox-group {
+  width: 100%;
+  overflow: hidden;
+}
+
+.question-answer .el-radio,
+.question-answer .el-input,
+.question-answer .el-textarea,
+.question-answer .el-checkbox{
+  margin-right: 0;
+}
+
+.question-answer table .el-input {
+  margin-top: 0rem;
+  margin-left: 10px;
+}
+
+.el-radio, .el-checkbox{
+  position: relative;
+}
+
+.el-radio__inner{
+  box-shadow: none !important;
+}
+
+.el-radio .el-radio__label,
+.el-checkbox .el-checkbox__label{
+  padding-left: 5px;
+  position: relative;
+  top: 1px;
+}
+
+.answer-description-quill-editor .ql-editor{
+  height: 280px;
+}
+
+.question-quill-editor .ql-editor {
+  height: 80px !important;
+}
+
+.question-editor{
+  border-top: 1px solid #DCDFE6;
+  padding: 2rem 2rem 1rem 2rem;
+  background-color: #fafafa;
+}
+
+/*.question-editor .question-remark{*/
+  /*margin-top: 0.5rem;*/
+/*}*/
+
+.question{
+  border-bottom: 1px solid #DCDFE6;
+}
+
+.question.invalid{
+  border: 1px dashed rgb(222, 103, 82) !important;
+}
+
+.question:first-child{
+  border-top: 1px solid #DCDFE6;
+}
+
+.question-preview{
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+.question-preview:hover{
+  background-color: #fafafa;
+}
+
+.question-preview.type-11 .question-title{
+  margin-bottom: 1rem;
+}
+
+.question-title {
+  text-align: left;
+  display: flex;
+}
+
+.question-require-answer{
+  color: #ff0000;
+  width: 10px;
+}
+
+.question .remark{
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 6px;
+}
+
+.question-answer{
+  text-align: left;
+  margin-left: 10px;
+}
+
+.question-answer .question-dependent{
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 1rem;
+}
+
+.question-answer .question-forward{
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 1rem;
+}
+
+.question-content{
+  display: flex;
+  flex-direction: column;
+}
+
+.question-content .title{
+  display: flex;
+  word-break: break-all;
+}
+
+.question-content img {
+  width: 100%;
+}
+
+.question-answer .answer-item input,
+.question-answer .answer-item textarea{
+  background-color: transparent;
+}
+
+.question .tool-bar{
+  height: 1rem;
+  line-height: 1rem;
+  font-size: 12px;
+  visibility: hidden;
+  display: flex;
+  padding-left: 10px;
+  justify-content: space-between;
+}
+
+.question:hover .tool-bar{
+  visibility: visible;
+}
+
+.question:hover .tool-bar.hide{
+  visibility: hidden;
+}
+
+.question .tool-bar .left{
+  /*width: 33.333333333333%;*/
+  /*float: left;*/
+}
+
+.question .tool-bar .right{
+  /*width: 66.666666666666%;*/
+  /*float: left;*/
+  /*text-align: right;*/
+}
+
+.question .tool-bar .right .operation{
+  margin-left: 10px;
+  border: 1px solid #aaa;
+  padding: 2px 3px;
+  border-radius: 4px;
+  font-size: 12px !important;
+}
+
+.question .tool-bar .right .operation:hover{
+  border: 1px solid rgb(64, 158, 255);
+}
+
+.el-icon-download.rotate180{
+  transform:rotate(180deg);
+  -ms-transform:rotate(180deg); /* Internet Explorer */
+  -moz-transform:rotate(180deg); /* Firefox */
+  -webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+  -o-transform:rotate(180deg); /* Opera */
+}
+
+
+
+/**/
+.question-answer ul:first-child{
+  margin-top: 1rem;
+}
+
+.question-answer ul {
+  overflow: hidden;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+/*.answer-type-choice > div{*/
+  /*padding: 0 0 10px 0;*/
+/*}*/
+
+/*答案允许填空*/
+.answer-item-wrapper {
+}
+
+.answer-item-wrapper .complete{
+  width: 120px;
+  margin-left: 10px;
+  margin-top: 0;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+  font-size: 14px;
+}
+
+.answer-item-wrapper .require-complete{
+  font-size: 14px;
+  color: red;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.answer-item-wrapper .description{
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0.5rem 1.2rem 1rem 1.2rem;
+}
+
+.answer-item-wrapper.img-desc{
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.answer-item-wrapper.img-desc .answer-item{
+  display: block;
+  text-align: center;
+  margin: 0.5rem 0 1rem 0;
+}
+
+
+textarea {
+  margin-bottom: 5px;
+}
+
+
+
+
+
+
+.question-info {
+  margin-top: 0.8rem;
+}
+
+.options table{
+  width: 100%;
+  margin-top: 0.8rem;
+  border-collapse: collapse;
+}
+
+.options table thead{
+  background-color: #e8e8e8;
+}
+
+.options table thead td > div{
+  padding: 10px;
+}
+
+.question .options table tbody tr:first-child td > div{
+  padding-top: 6px;
+}
+
+.options table td > div{
+  padding: 3px 0;
+  font-size: 13px;
+  text-align: center;
+}
+
+.design-icon{
+  height: 1.2rem;
+  width: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 1.2rem;
+  text-align: center;
+  line-height: 1.2rem !important;
+  font-size: 0.9rem;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.design-icon.selected{
+  color: #409EFF;
+  border: 1px solid #409EFF;
+}
+
+.design-icon:hover{
+  color: #409eff;
+  background-color: #ecf5ff;
+  border-color: #b3d8ff;
+}
+
+.options table td.option-input > div{
+  text-align: left;
+}
+.options table td.option-input{
+  width: 40%;
+}
+
+.options table td.option-oper,
+.options table td.option-move,
+.options table td.option-complete{
+  width: 10%;
+}
+
+.options table td.option-correct,
+.options table td.option-checked,
+.options table td.option-picture,
+.options table td.option-description{
+  width: 8%;
+}
+
+.options table td.option-complete .el-checkbox{
+  margin-right: 0;
+}
+
+.other-oper{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.other-oper .el-link{
+  margin-right: 10px;
+}
+
+.el-link i{
+  font-size: 1rem;
+}
+
+.settings {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #F4F4F4;
+  border: 1px dashed #DBDBDB;
+}
+
+.completion-oper, .matrix-oper{
+  margin-top: 0.6rem;
+}
+
+.completion-oper.completion-table,
+.matrix-oper.matrix-table {
+  display: flex;
+}
+
+.completion-oper.completion-table .row-title,
+.completion-oper.completion-table .col-title,
+.matrix-oper.matrix-table .row-title,
+.matrix-oper.matrix-table .col-title{
+  width: 40%;
+}
+
+.completion-oper.completion-table .col-title,
+.matrix-oper.matrix-table .col-title {
+  margin-left: 4%;
+}
+
+.completion-oper.completion-table .title,
+.matrix-oper.matrix-table .title{
+  background-color: #F4F4F4;
+  padding: 4px 15px;
+  border: 1px solid #DBDBDB;
+  margin-right: 0;
+  border-bottom-width: 0;
+}
+
+.completion-oper.completion-table textarea,
+.matrix-oper.matrix-table textarea{
+  border-radius: 0 !important;
+}
+
+.matrix-oper .title,
+.completion-oper .title,
+.question-info .title,
+.other-oper .title,
+.settings .title{
+  margin-right: 2rem;
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+}
+
+.matrix-oper .title,
+.completion-oper .title,
+.question-info .title,
+.other-oper .title{
+  margin-right: 0.5rem;
+}
+
+.matrix-oper .lebal,
+.completion-oper .lebal{
+  font-size: 14px;
+  color: #666;
+}
+
+.settings .el-link{
+  margin-right: 10px;
+}
+
+.el-dialog{
+  width: 700px !important;
+}
+
+.option-image-uploader{
+  text-align: center;
+}
+
+.el-dialog table {
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  color: #666;
+  font-weight: normal;
+}
+
+.el-dialog table td,
+.el-dialog table th{
+  border-right: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  text-align: left;
+}
+
+.el-dialog table td > div,
+.el-dialog table th > div{
+  padding: 8px 10px;
+}
+
+.rows.no-condition-forward{
+  display: flex;
+  height: 40px;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.matrix-table textarea,
+.answer-type-completion textarea {
+  min-height: 36px !important;
+  padding: 6px 15px;
+}
+
+.completion-underline textarea,
+.completion-underline input{
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+  border-radius: 0 !important;
+}
+
+
+table .title{
+  font-size: 14px;
+  color: #666;
+  font-weight: bold;
+}
