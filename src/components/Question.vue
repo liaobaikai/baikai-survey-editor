@@ -392,9 +392,23 @@
           // 判断当前问题是否有依赖的问题，如果有依赖的问题，那个问题是否显示，如果不显示，则当前问题也不能显示。
 
           if(!!this.question.userAnswer){
+
             this.userAnswerBackup = JSON.parse(JSON.stringify(this.question.userAnswer));
           }
 
+          if(!!this.question.answer){
+
+            for(let answer of this.question.answer){
+
+              if(!!answer && !!answer.answer){
+
+                this.$set(answer, 'answer', answer.answer.replace(/<\/?.+?\/?>/g, '').replace(/<[^>]+>/g, ''));
+                
+              }
+
+            }
+
+          }
 
         },
 
