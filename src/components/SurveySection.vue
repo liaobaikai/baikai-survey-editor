@@ -77,7 +77,8 @@
         @move-up="moveUp"
         @move-down="moveDown"
         @move-to-first="moveToFirst"
-        @move-to-last="moveToLast"></question>
+        @move-to-last="moveToLast"
+        @upload-file="onUploadFile"></question>
 
     </template>
 
@@ -114,6 +115,11 @@
         }
       },
       methods: {
+
+        onUploadFile: function(file, editor, index){
+          this.$emit('upload-file', file, editor, index);
+        },
+
         onUpdated: function (e) {
           console.info(e);
           // this.$emit();

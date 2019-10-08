@@ -256,11 +256,16 @@
         <div>
 
           <!-- 选项说明 -->
-          <quill-editor
+          <!--<quill-editor-->
+            <!--class="answer-description-quill-editor"-->
+              <!--v-model="optionDescription"-->
+              <!--ref="descriptionQuillEditor"-->
+              <!--:options="editorOption"></quill-editor>-->
+          <my-quill-editor
             class="answer-description-quill-editor"
-              v-model="optionDescription"
-              ref="descriptionQuillEditor"
-              :options="editorOption"></quill-editor>
+            v-model="optionDescription"
+            @change="onChange"
+            @upload-file="onUploadFile"></my-quill-editor>
 
         </div>
       </div>
@@ -281,12 +286,13 @@
 
     import {answerTemplate} from '../../js/question.answer.template'
     import questionTemplate from "../../js/question.template";
-    import { quillEditor } from 'vue-quill-editor';
+    // import { quillEditor } from 'vue-quill-editor';
+    import MyQuillEditor from "../MyQuillEditor";
 
     export default {
         name: "ChoiceEditor",
       props: ['question', 'sections'],
-      components: {quillEditor},
+      components: {MyQuillEditor},
       data: function () {
         return {
           choiceQuestion: questionTemplate.choiceQuestion,
@@ -376,6 +382,15 @@
       },
 
       methods: {
+
+          onChange: function(content){
+            this.optionDescription = content;
+
+          },
+
+          onUploadFile: function(file, editor, index){
+            this.$emit('upload-file', file, editor, index);
+          },
 
           /**
            * 不计分
@@ -480,7 +495,11 @@
          */
         closeAnswerDescriptionDialog: function(){
 
-          this.question.answer[this.descriptionIndex].description = this.optionDescription;
+          // this.question.answer[this.descriptionIndex].description = this.optionDescription;
+
+          this.$set(this.question.answer[this.descriptionIndex], 'description', this.optionDescription);
+
+          // console.info(this.question.answer[this.descriptionIndex].description)
 
           this.descriptionDialogVisible = false;
 

@@ -51,7 +51,7 @@ table {
 }
 
 .dialog-quill-editor .ql-editor{
-  height: 280px !important;
+  height: 250px !important;
 }
 
 .question-answer .el-radio-group,
@@ -90,7 +90,7 @@ table {
 }
 
 .answer-description-quill-editor .ql-editor{
-  height: 280px;
+  height: 250px;
 }
 
 .question-quill-editor .ql-editor {

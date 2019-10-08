@@ -100,11 +100,12 @@
             <tr>
               <td>说明：</td>
               <td>
-                <quill-editor
+                <my-quill-editor
                   class="description-quill-editor"
                   v-model="survey.description"
-                  ref="descriptionQuillEditor"
-                  :options="{ placeholder: '问卷说明' }"></quill-editor>
+                  style="margin-top: 10px"
+                  @change="onChangeDescription"
+                  @upload-file="onUploadFile"></my-quill-editor>
               </td>
             </tr>
 
@@ -145,7 +146,8 @@
           @move-up="moveUp"
           @move-down="moveDown"
           @move-to-first="moveToFirst"
-          @move-to-last="moveToLast"></survey-section>
+          @move-to-last="moveToLast"
+          @upload-file="onUploadFile"></survey-section>
 
 
         <!-- 提交答卷后的处理方式 -->
@@ -170,13 +172,16 @@
 
               <el-alert :closable="false">提交问卷后，显示一段您的自定义的文案。</el-alert>
 
-              <quill-editor
-                  class="description-quill-editor"
-                  v-model="survey.submitText"
-                  ref="descriptionQuillEditor"
-                  :options="{placeholder: ''}"
-                  style="margin-top: 10px">
-              </quill-editor>
+              <!--<quill-editor-->
+                  <!--v-model="survey.submitText"-->
+                  <!--:options="{placeholder: ''}"-->
+                  <!--style="margin-top: 10px">-->
+              <!--</quill-editor>-->
+              <my-quill-editor
+                v-model="survey.submitText"
+                style="margin-top: 10px"
+                @change="onChangeSubmitText"
+                @upload-file="onUploadFile"></my-quill-editor>
 
             </div>
 
@@ -209,12 +214,13 @@
     import SurveySection from "./SurveySection";
     import questionTemplate from "../js/question.template";
     import {navMenu} from "../js/common";
-    import { quillEditor } from 'vue-quill-editor';
+    // import { quillEditor } from 'vue-quill-editor';
     import {questions} from "../js/familiar-question.template";
+    import MyQuillEditor from "./MyQuillEditor";
 
     export default {
       name: "SurveyEditor",
-      components: {quillEditor, SurveySection},
+      components: {MyQuillEditor, SurveySection},
       props: ['surveyData', 'interval', 'enableAutoSave', 'showSubmitAction'],
       data: function () {
 
@@ -310,6 +316,19 @@
       },
 
       methods: {
+        onChangeDescription: function(content){
+          this.$set(this.survey, 'description', content);
+        },
+
+        onChangeSubmitText: function(content){
+          this.$set(this.survey, 'submitText', content);
+        },
+
+        onUploadFile: function(file, editor, index){
+          this.$emit('upload-file', file, editor, index);
+          console.info(file.name)
+          // editor.insertEmbed(index, 'image', "https://img-bss.csdn.net/1568878819411.jpg");
+        },
 
         onChangeValue: function(q){
           this.$emit('change-value', q);

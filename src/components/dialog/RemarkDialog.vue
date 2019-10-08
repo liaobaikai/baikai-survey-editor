@@ -14,11 +14,14 @@
       :close-on-click-modal="false">
       <div class="dialog-body">
 
-        <quill-editor
-          class="dialog-quill-editor"
-          v-model="remark"
-          ref="descriptionQuillEditor"
-          :options="editorOption"></quill-editor>
+        <!--<quill-editor-->
+          <!--class="dialog-quill-editor"-->
+          <!--v-model="remark"-->
+          <!--ref="descriptionQuillEditor"-->
+          <!--:options="editorOption"></quill-editor>-->
+
+        <my-quill-editor class="dialog-quill-editor" v-model="remark" @change="onChange" @upload-file="onUploadFile"></my-quill-editor>
+
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="remarkDialogVisible = false">取消</el-button>
@@ -33,11 +36,12 @@
 <script>
 
     import { quillEditor } from 'vue-quill-editor';
+    import MyQuillEditor from "../MyQuillEditor";
 
     export default {
         name: "RemarkDialog",
       props: ['question'],
-      components: {quillEditor},
+      components: {MyQuillEditor, quillEditor},
       data: function () {
         return {
           // ---------- 填写提示对话框 -------------------
@@ -63,6 +67,14 @@
         updateQuestionRemark: function(){
           this.$set(this.question, 'remark', this.remark);
           this.remarkDialogVisible = false;
+        },
+
+        onChange: function(content){
+          this.remark = content;
+        },
+
+        onUploadFile: function(file, editor, index){
+          this.$emit('upload-file', file, editor, index);
         },
       }
     }

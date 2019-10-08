@@ -209,12 +209,19 @@
       </div>
 
       <!-- 标题编辑 -->
-      <quill-editor
-          class="question-quill-editor"
-          v-model="question.title"
-          ref="descriptionQuillEditor"
-          :options="editorOption"
-          @change="onTitleChange"></quill-editor>
+      <!--<quill-editor-->
+          <!--class="question-quill-editor"-->
+          <!--v-model="question.title"-->
+          <!--ref="descriptionQuillEditor"-->
+          <!--:options="editorOption"-->
+          <!--@change="onTitleChange"></quill-editor>-->
+      <my-quill-editor
+        class="question-quill-editor"
+        v-model="question.title"
+        style="margin-top: 10px"
+        @change="onTitleChange"
+        @upload-file="onUploadFile"></my-quill-editor>
+
 
       <div class="question-info" v-if="isQuestion">
         <!-- 问题类型，是否必答，填写提示 -->
@@ -277,7 +284,7 @@
           :false-label="0" :true-label="1">必答</el-checkbox>
 
         <!-- 备注对话框 -->
-        <remark-dialog :question="question"></remark-dialog>
+        <remark-dialog :question="question" @upload-file="onUploadFile"></remark-dialog>
 
       </div>
 
@@ -285,7 +292,8 @@
       <choice-editor
         v-if="isChoiceQuestion || isSortQuestion"
         :question="question"
-        :sections="sections"></choice-editor>
+        :sections="sections"
+        @upload-file="onUploadFile"></choice-editor>
 
       <!-- 填空题 -->
       <completion-editor
@@ -335,7 +343,7 @@
 
 <script>
 
-    import { quillEditor } from 'vue-quill-editor';
+    // import { quillEditor } from 'vue-quill-editor';
 
     import ChoiceEditor from "./editor/ChoiceEditor";
     import CompletionEditor from "./editor/CompletionEditor";
@@ -352,10 +360,12 @@
     import MatrixEditor from "./editor/MatrixEditor";
     import ScoreEditor from "./editor/ScoreEditor";
     import '../assets/css/question.css';
+    import MyQuillEditor from "./MyQuillEditor";
 
     export default {
         name: "Question",
       components: {
+        MyQuillEditor,
         ScoreEditor,
         MatrixEditor,
         OtherAnswer,
@@ -367,8 +377,7 @@
         ForwardDialog,
         DependentDialog,
         CompletionEditor,
-        ChoiceEditor,
-      quillEditor},
+        ChoiceEditor},
       props: ['question', 'sections', 'editable', 'showSequence', 'insertPoint', 'readonly'],
         data: function() {
           return {
@@ -609,6 +618,14 @@
 
         methods: {
 
+          // 上传图片
+          onUploadFile: function(file, editor, index){
+
+            this.$emit('upload-file', file, editor, index);
+
+          },
+
+
           // 通过问题ID获取问题
           getQuestionById: function(qid){
 
@@ -758,6 +775,14 @@
                 // 清空answer
                 delete this.question.answer;
                 break;
+              case this.scoreQuestion.single.type:
+                this.$set(this.question, 'userAnswer', '');
+                // 只保留一个选项
+                console.info(this.question);
+                break;
+              case this.scoreQuestion.multiple.type:
+                this.$set(this.question, 'userAnswer', []);
+                break;
             }
 
             //
@@ -767,8 +792,8 @@
 
 
           /*问题被修改*/
-          onTitleChange: function(){
-
+          onTitleChange: function(content){
+            this.$set(this.question, 'title', content);
           }
         },
 
