@@ -776,12 +776,21 @@
                 delete this.question.answer;
                 break;
               case this.scoreQuestion.single.type:
-                this.$set(this.question, 'userAnswer', '');
+                this.$set(this.question, 'userAnswer', 0);
                 // 只保留一个选项
                 console.info(this.question);
+
+                this.$set(this.question, 'vertical', this.question.vertical.splice(0, 1));
+
                 break;
               case this.scoreQuestion.multiple.type:
-                this.$set(this.question, 'userAnswer', []);
+
+                let array = [];
+                for(let i = 0; i < this.question.vertical.length; i++){
+                  array.push(0);
+                }
+
+                this.$set(this.question, 'userAnswer', array);
                 break;
             }
 

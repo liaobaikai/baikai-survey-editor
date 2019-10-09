@@ -506,7 +506,7 @@ export default {
       sequence: 0, // 题号
       type: 15,
       vertical: ['行1', '行2'],
-      userAnswer: [], // 用户答案
+      userAnswer: [0, 0], // 用户答案
       requireAnswer: 1, // 需要回答
     },
   },

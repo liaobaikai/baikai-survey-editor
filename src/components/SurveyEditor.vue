@@ -252,7 +252,7 @@
           sequence: -1,
           currentSequence: 1,
           currentSectionSequence: 0,
-          readonly: true, // 只读
+          readonly: false, // 只读
           insertPoint: {  // 插入点
             sectionIndex: -1,
             sectionId: null,
@@ -1068,8 +1068,9 @@
                   for(let ua of fragment.userAnswer){
                     if(typeof ua === 'string' || typeof ua === 'number'){
                       ua = '';
-                    } else if(typeof ua === 'object'){
-                      ua.length = 0;
+                    } else if(!!ua && typeof ua === 'object' && ua.length > 0){
+                      // ua.length = 0;
+                      ua.splice(0, ua.length);
                     }
                   }
                 }
