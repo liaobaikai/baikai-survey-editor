@@ -22,7 +22,7 @@
         <ul v-for="page of (Math.ceil(question.answer.length / question.columns))" :key="page">
 
           <template v-for="(item, index) in question.answer">
-            <li class="answer-item-wrapper"
+            <li class="answer-item-wrapper ql-snow"
               v-if="(page - 1) * question.columns <= index && index < page * question.columns"
               :style="{ width: (100 / question.columns) + '%'}">
 
@@ -66,7 +66,7 @@
 
               </template>
 
-              <div class="description" v-if="!!item.description && !(!!item.image)" v-html="item.description"></div>
+              <div class="description ql-editor" v-if="!!item.description && !(!!item.image)" v-html="item.description"></div>
 
             </li>
 

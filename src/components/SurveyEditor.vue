@@ -72,7 +72,7 @@
 
       <div class="survey-editor">
 
-        <div class="survey-header" @click="doEditSurveyHeader(true)">
+        <div class="survey-header ql-snow" @click="doEditSurveyHeader(true)">
           <div class="survey-title" >
             <h2>{{survey.title}}</h2>
           </div>
@@ -131,6 +131,7 @@
           :editable="editable"
           :sections="survey.sections"
           :insertPoint="insertPoint"
+          :readonly="readonly"
           @section-move-to-first="sectionMoveToFirst"
           @section-move-to-last="sectionMoveToLast"
           @section-remove="removeSection"
@@ -251,6 +252,7 @@
           sequence: -1,
           currentSequence: 1,
           currentSectionSequence: 0,
+          readonly: true, // 只读
           insertPoint: {  // 插入点
             sectionIndex: -1,
             sectionId: null,
@@ -1092,7 +1094,7 @@
             }
           }
 
-          console.info('survey', survey);
+          console.info('survey', survey, JSON.stringify(survey));
 
           return survey;
         },
@@ -1157,6 +1159,8 @@
   .description-quill-editor .ql-editor{
     height: 200px !important;
   }
+
+
 
   .triangle-up, .triangle-up-outline{
     width: 0;

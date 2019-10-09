@@ -67,6 +67,7 @@
         :editable="editable"
         :sections="sections"
         :insertPoint="insertPoint"
+        :readonly="readonly"
         @finish-edit="finishEdit"
         @change-value="onChangeValue"
         @insert="insertItem"
@@ -94,7 +95,7 @@
     export default {
       name: "SurveySection",
       components: {Question},
-      props: ['fragments', 'questionSequences', 'editable',
+      props: ['fragments', 'questionSequences', 'editable', 'readonly',
         'showSequence', 'sections', 'currentPage', 'pageCount', 'insertPoint'],
       data: function(){
         return {

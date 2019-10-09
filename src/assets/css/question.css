@@ -171,6 +171,7 @@ table {
 
 .question-content .title{
   display: flex;
+  flex-direction: column;
   word-break: break-all;
 }
 

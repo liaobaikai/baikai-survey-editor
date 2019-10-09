@@ -2,7 +2,7 @@
   "name": "baikai-survey-editor",
   "main": "./dist/baikai-survey-editor.js",
   "description": "A Component Library for Vue.js.",
-  "version": "1.3.7",
+  "version": "1.3.9",
   "author": "Baikai.liao",
   "license": "MIT",
   "private": false,

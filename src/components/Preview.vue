@@ -14,7 +14,7 @@
         <div v-if="currentPage !== 0">
 
 
-          <div class="survey-header">
+          <div class="survey-header ql-snow">
             <div class="survey-title" style="word-break: break-word">
               <h3>{{survey.title}}</h3>
             </div>
@@ -85,7 +85,7 @@
           <div style="height: 100px" v-if="!!readonly"></div>
 
         </div>
-        <div v-else style="min-height: 400px">
+        <div v-else style="min-height: 400px" class="ql-snow">
           <template v-if="answerFinish">
             <div class="ql-editor" v-html="survey.submitText"></div>
           </template>
@@ -295,6 +295,7 @@
                       if(len < fragment.minAnswer){
 
                         this.invalidFragment(fragment, '至少选择' + fragment.minAnswer + '个选项！');
+                        continue;
 
 
                       } else {
@@ -308,6 +309,7 @@
                       // 最多选择
                       if(len > fragment.maxAnswer){
                         this.invalidFragment(fragment, '至多选择' + fragment.maxAnswer + '个选项！');
+                        continue;
 
 
                       } else {
