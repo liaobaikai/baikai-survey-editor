@@ -310,7 +310,7 @@
               // 设置问题
               let dq = this.dependableQuestions[value];
               this.dependentQuestions[index].question = {
-                id: dq.id,
+                // id: dq.id,
                 title: dq.title,
                 sequence: dq.sequence,
                 type: dq.type

@@ -56,7 +56,7 @@
     </el-checkbox-group>
 
   </div>
-    
+
 </template>
 
 <script>
@@ -95,7 +95,11 @@
           // 查询哪个问题对我有依赖？？？？？
           // this.$message.info(JSON.stringify(this.question.userAnswer));
 
-
+            if(this.question.userAnswer.length === this.question.answer.length) {
+                this.$emit('handle-forward');
+            } else {
+                this.$emit('handle-forward-seq', this.question['forward'], true);
+            }
 
         },
 

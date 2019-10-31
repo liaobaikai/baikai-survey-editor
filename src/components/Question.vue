@@ -15,8 +15,8 @@
 
         <template v-if="isQuestion">
           <span
-              class="question-require-answer"
-              v-if="question.requireAnswer"><b>*</b></span>
+            class="question-require-answer"
+            v-if="question.requireAnswer"><b>*</b></span>
         </template>
 
         <div class="question-content">
@@ -26,8 +26,8 @@
             <template v-if="isQuestion">
 
               <span
-                  class="question-sequence" style="margin-right: 5px;"
-                  v-if="showSequence">{{question.sequence}}. </span>
+                class="question-sequence" style="margin-right: 5px;"
+                v-if="showSequence">{{question.sequence}}. </span>
 
             </template>
 
@@ -38,7 +38,7 @@
           </div>
           <!--不是分页，段落的话，就显示-->
           <div class="remark"
-                v-if="question.remark && isQuestion" v-html="question.remark"></div>
+               v-if="question.remark && isQuestion" v-html="question.remark"></div>
 
         </div>
 
@@ -52,6 +52,8 @@
         <choice-answer
           v-if="isChoiceQuestion"
           @change-value="onChangeValue"
+          @handle-forward="handleForward"
+          @handle-forward-seq="forwardSequence"
           :sections="sections"
           :question="question"
           :readonly="readonly"
@@ -61,7 +63,10 @@
         <!-- 填空题 -->
         <completion-answer
           v-else-if="isCompletionQuestion"
+          @handle-forward="handleForward"
+          @handle-forward-seq="forwardSequence"
           :question="question"
+          :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
           :editable="editable"></completion-answer>
@@ -69,7 +74,10 @@
         <!-- 矩阵题 -->
         <matrix-answer
           v-else-if="isMatrixQuestion"
+          @handle-forward="handleForward"
+          @handle-forward-seq="forwardSequence"
           :question="question"
+          :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
           :editable="editable"></matrix-answer>
@@ -77,7 +85,10 @@
         <!-- 评分题 -->
         <score-answer
           v-else-if="isScoreQuestion"
+          @handle-forward="handleForward"
+          @handle-forward-seq="forwardSequence"
           :question="question"
+          :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
           :editable="editable"></score-answer>
@@ -85,14 +96,18 @@
         <!--其他题型-->
         <other-answer
           v-else-if="isOthers"
+          @handle-forward="handleForward"
+          @handle-forward-seq="forwardSequence"
           :question="question"
+          :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
           :editable="editable"></other-answer>
 
 
         <!-- 题目依赖提示 -->
-        <div class="question-dependent" v-if="editable && !!this.question.dependent && typeof this.question.dependent === 'object'">
+        <div class="question-dependent"
+             v-if="editable && !!this.question.dependent && typeof this.question.dependent === 'object'">
           <el-tooltip placement="bottom">
             <div slot="content">
               <span>当题目</span><br/>
@@ -125,7 +140,7 @@
         <!-- 题目跳转提示，无条件跳转 -->
         <div class="question-forward" v-if="hasForward">
           <span>*此题设置了跳转逻辑</span>
-          <span style="color:#ff6600;" >
+          <span style="color:#ff6600;">
             <template v-if="!!question.forward">
               <template v-if="question.forward > 1">
                 (跳转到第{{question.forward}}题)
@@ -138,7 +153,8 @@
 
       </div>
 
-      <el-alert v-if="!!question.invalid && !!question['invalidMsg']" :closable="false" :title="question['invalidMsg']" type="error"></el-alert>
+      <el-alert v-if="!!question.invalid && !!question['invalidMsg']" :closable="false" :title="question['invalidMsg']"
+                type="error"></el-alert>
 
       <div v-if="editable && !!!question.editing" class="tool-bar">
 
@@ -161,37 +177,44 @@
             class="operation"
             icon="el-icon-edit"
             :underline="false"
-            @click="editItem">编辑</el-link>
+            @click="editItem">编辑
+          </el-link>
           <el-link
             class="operation"
             :underline="false"
             icon="el-icon-copy-document"
-            @click="duplicateItem">复制</el-link>
+            @click="duplicateItem">复制
+          </el-link>
           <el-link
             class="operation"
             :underline="false"
             icon="el-icon-delete"
-            @click="removeItem">删除</el-link>
+            @click="removeItem">删除
+          </el-link>
           <el-link
             class="operation"
             icon="el-icon-top"
             :underline="false"
-            @click="moveUp">上移</el-link>
+            @click="moveUp">上移
+          </el-link>
           <el-link
             class="operation"
             icon="el-icon-bottom"
             :underline="false"
-            @click="moveDown">下移</el-link>
+            @click="moveDown">下移
+          </el-link>
           <el-link
             class="operation"
             :underline="false"
             icon="el-icon-download rotate180"
-            @click="moveToFirst">最前</el-link>
+            @click="moveToFirst">最前
+          </el-link>
           <el-link
             class="operation"
             :underline="false"
             icon="el-icon-download"
-            @click="moveToLast">最后</el-link>
+            @click="moveToLast">最后
+          </el-link>
         </div>
 
 
@@ -210,11 +233,11 @@
 
       <!-- 标题编辑 -->
       <!--<quill-editor-->
-          <!--class="question-quill-editor"-->
-          <!--v-model="question.title"-->
-          <!--ref="descriptionQuillEditor"-->
-          <!--:options="editorOption"-->
-          <!--@change="onTitleChange"></quill-editor>-->
+      <!--class="question-quill-editor"-->
+      <!--v-model="question.title"-->
+      <!--ref="descriptionQuillEditor"-->
+      <!--:options="editorOption"-->
+      <!--@change="onTitleChange"></quill-editor>-->
       <my-quill-editor
         class="question-quill-editor"
         v-model="question.title"
@@ -225,7 +248,8 @@
 
       <div class="question-info" v-if="isQuestion">
         <!-- 问题类型，是否必答，填写提示 -->
-        <span class="title">题型</span><el-select
+        <span class="title">题型</span>
+        <el-select
           v-model="question.type"
           @change="onChangeQuestionType">
 
@@ -281,7 +305,8 @@
         <el-checkbox
           style="margin-left: 1rem;"
           v-model="question.requireAnswer"
-          :false-label="0" :true-label="1">必答</el-checkbox>
+          :false-label="0" :true-label="1">必答
+        </el-checkbox>
 
         <!-- 备注对话框 -->
         <remark-dialog :question="question" @upload-file="onUploadFile"></remark-dialog>
@@ -332,13 +357,14 @@
       <div style="text-align: center; margin: 1rem">
         <el-button
           type="primary"
-          @click="finishEdit">完成编辑</el-button>
+          @click="finishEdit">完成编辑
+        </el-button>
       </div>
 
     </div>
 
   </div>
-    
+
 </template>
 
 <script>
@@ -364,485 +390,613 @@
 
     export default {
         name: "Question",
-      components: {
-        MyQuillEditor,
-        ScoreEditor,
-        MatrixEditor,
-        OtherAnswer,
-        ScoreAnswer,
-        MatrixAnswer,
-        CompletionAnswer,
-        ChoiceAnswer,
-        RemarkDialog,
-        ForwardDialog,
-        DependentDialog,
-        CompletionEditor,
-        ChoiceEditor},
-      props: ['question', 'sections', 'editable', 'showSequence', 'insertPoint', 'readonly'],
-        data: function() {
-          return {
+        components: {
+            MyQuillEditor,
+            ScoreEditor,
+            MatrixEditor,
+            OtherAnswer,
+            ScoreAnswer,
+            MatrixAnswer,
+            CompletionAnswer,
+            ChoiceAnswer,
+            RemarkDialog,
+            ForwardDialog,
+            DependentDialog,
+            CompletionEditor,
+            ChoiceEditor
+        },
+        props: ['question', 'sections', 'editable', 'showSequence', 'insertPoint', 'readonly'],
+        data: function () {
+            return {
 
-            choiceQuestion: questionTemplate.choiceQuestion,
-            completionQuestion: questionTemplate.completionQuestion,
-            matrixQuestion: questionTemplate.matrixQuestion,
-            scoreQuestion: questionTemplate.scoreQuestion,
-            others: questionTemplate.others,
+                choiceQuestion: questionTemplate.choiceQuestion,
+                completionQuestion: questionTemplate.completionQuestion,
+                matrixQuestion: questionTemplate.matrixQuestion,
+                scoreQuestion: questionTemplate.scoreQuestion,
+                others: questionTemplate.others,
 
-            plugin: questionTemplate.plugin,
-            editorOption: {
-              placeholder: '',
-            },
-            userAnswerBackup: "",
-          }
+                plugin: questionTemplate.plugin,
+                editorOption: {
+                    placeholder: '',
+                },
+                userAnswerBackup: "",
+            }
         },
 
-        created(){
+        created() {
 
-          // 判断当前问题是否有依赖的问题，如果有依赖的问题，那个问题是否显示，如果不显示，则当前问题也不能显示。
+            // 判断当前问题是否有依赖的问题，如果有依赖的问题，那个问题是否显示，如果不显示，则当前问题也不能显示。
 
-          if(!!this.question.userAnswer){
+            if (!!this.question.userAnswer) {
 
-            this.userAnswerBackup = JSON.parse(JSON.stringify(this.question.userAnswer));
-          }
+                this.userAnswerBackup = JSON.parse(JSON.stringify(this.question.userAnswer));
+            }
 
-          if(!!this.question.answer){
+            if (!!this.question.answer) {
 
-            for(let answer of this.question.answer){
+                for (let answer of this.question.answer) {
 
-              if(!!answer && !!answer.answer){
+                    if (!!answer && !!answer.answer) {
 
-                this.$set(answer, 'answer', answer.answer.replace(/<\/?.+?\/?>/g, '').replace(/<[^>]+>/g, ''));
-                
-              }
+                        this.$set(answer, 'answer', answer.answer.replace(/<\/?.+?\/?>/g, '').replace(/<[^>]+>/g, ''));
+
+                    }
+
+                }
 
             }
 
-          }
-
         },
 
-        watch:{
-          'question': {
-            handler: function(newVal){
+        watch: {
+            'question': {
+                handler: function (newVal) {
 
-              // let surveyQuestions = sessionStorage.getItem('surveyQuestions');
-              // if(!!surveyQuestions){
-              //
-              //   surveyQuestions = JSON.parse(surveyQuestions);
-              //
-              //   let backupQuestion = surveyQuestions[newVal.id];
-              //
-              //   if(!!!backupQuestion){
-              //     // 备份不存在，则说明是新增的问题
-              //     return;
-              //   }
-              //
-              //   // 获取备份的问题
-              //
-              //   // 通过匹配原数据
-              //   let backupQuestionProps = Object.getOwnPropertyNames(backupQuestion);
-              //
-              //   // 问题数据
-              //   for(let propName of backupQuestionProps){
-              //
-              //     if(propName === 'answer'
-              //       || propName === 'userAnswer'
-              //       || propName === 'editing'){
-              //       continue;
-              //     }
-              //
-              //     if(newVal[propName] !== backupQuestion[propName]){
-              //       // 不一致了
-              //       newVal.updated = 1;
-              //       break;
-              //     }
-              //
-              //   }
-              //
-              //   // 问题答案数据
-              //   let answer = newVal.answer;
-              //   let backupAnswer = backupQuestion.answer;
-              //
-              //   // 两个问题均有答案
-              //   if(!!answer && !!backupAnswer){
-              //
-              //     // 答案数组
-              //     if(answer.length !== backupAnswer.length){
-              //       newVal.updated = 1;
-              //     }
-              //
-              //     for(let i = 0; i < answer.length; i++){
-              //
-              //       let a1 = answer[i];
-              //       let a2 = backupAnswer[i];
-              //
-              //       // backupAnswer item
-              //       let backupAnswerProps = Object.getOwnPropertyNames(a2);
-              //
-              //       for(let answerPropName of backupAnswerProps){
-              //
-              //         if(a1[answerPropName] !== a2[answerPropName]){
-              //           a1.updated = 1;
-              //           break;
-              //         }
-              //
-              //       }
-              //
-              //     }
-              //
-              //   }
-              //
-              // }
-
-              newVal.updated = true;
+                    newVal.updated = true;
 
 
+                },
+                deep: true
             },
-            deep: true
-          },
         },
 
         computed: {
 
 
-          /**
-           * 该题是否有跳转逻辑
-           */
-          hasForward: function(){
+            /**
+             * 该题是否有跳转逻辑
+             */
+            hasForward: function () {
 
-            if(this.editable && !!this.question.forward) return true;
+                if (this.editable && !!this.question.forward) return true;
 
-            if(this.editable && !!this.question.answer){
+                if (this.editable && !!this.question.answer) {
 
-              for(let answer of this.question.answer){
+                    for (let answer of this.question.answer) {
 
-                if(!!answer.forward && answer.forward !== '0'){
-                  return this.editable && true;
+                        if (!!answer.forward && answer.forward !== '0') {
+                            return this.editable && true;
+                        }
+
+                    }
+
                 }
 
-              }
+                return false;
+            },
 
+            /**
+             * 判断是否是问题
+             * 非段落和分页
+             */
+            isQuestion: function () {
+                return (this.question.type !== this.plugin.section.type
+                    && this.question.type !== this.plugin.paragraph.type);
+            },
+
+            /**
+             * 是选择题
+             * 单选题，
+             * 多选题
+             * 下拉题
+             * 评分单选
+             * 评分多选
+             */
+            isChoiceQuestion: function () {
+                return (this.question.type === this.choiceQuestion.single.type
+                    || this.question.type === this.choiceQuestion.multiple.type
+                    || this.question.type === this.choiceQuestion.list.type
+                    || this.question.type === this.choiceQuestion.scoreSingle.type
+                    || this.question.type === this.choiceQuestion.scoreMultiple.type);
+            },
+
+            // 单选题，下拉题
+            isSingleChoiceQuestion: function () {
+                return (this.question.type === this.choiceQuestion.single.type
+                    || this.question.type === this.choiceQuestion.list.type
+                    || this.question.type === this.choiceQuestion.scoreSingle.type);
+            },
+
+            /**
+             * 填空题
+             * 单项填空
+             * 矩阵填空
+             * 表格填空
+             */
+            isCompletionQuestion: function () {
+                return (this.question.type === this.completionQuestion.single.type
+                    || this.question.type === this.completionQuestion.matrix.type
+                    || this.question.type === this.completionQuestion.table.type);
+            },
+
+            /**
+             * 矩阵题
+             * 矩阵单选
+             * 矩阵多选
+             * 表格填空
+             */
+            isMatrixQuestion: function () {
+                return (this.question.type === this.matrixQuestion.single.type
+                    || this.question.type === this.matrixQuestion.multiple.type
+                    || this.question.type === this.completionQuestion.table.type
+                    || this.question.type === this.matrixQuestion.score.type);
+            },
+
+            /**
+             * 矩阵表格
+             */
+            isMatrixTableQuestion: function () {
+                return this.question.type === this.completionQuestion.table.type;
+            },
+            /**
+             * 判断是否为评分题
+             * 单项评分
+             * 多项评分
+             */
+            isScoreQuestion: function () {
+                return (this.question.type === this.scoreQuestion.single.type
+                    || this.question.type === this.scoreQuestion.multiple.type);
+            },
+
+            /**
+             * 其他题型，
+             * 排序题
+             */
+            isOthers: function () {
+                return this.question.type === this.others.sort.type;
+            },
+
+            /**
+             * 排序题
+             */
+            isSortQuestion: function () {
+                return this.question.type === this.others.sort.type;
             }
-
-            return false;
-          },
-
-          /**
-           * 判断是否是问题
-           * 非段落和分页
-           */
-          isQuestion: function(){
-            return (this.question.type !== this.plugin.section.type
-                && this.question.type !== this.plugin.paragraph.type);
-          },
-
-          /**
-           * 是选择题
-           * 单选题，
-           * 多选题
-           * 下拉题
-           * 评分单选
-           * 评分多选
-           */
-          isChoiceQuestion: function(){
-            return (this.question.type === this.choiceQuestion.single.type
-              || this.question.type === this.choiceQuestion.multiple.type
-              || this.question.type === this.choiceQuestion.list.type
-              || this.question.type === this.choiceQuestion.scoreSingle.type
-              || this.question.type === this.choiceQuestion.scoreMultiple.type);
-          },
-
-          // 单选题，下拉题
-          isSingleChoiceQuestion: function(){
-            return (this.question.type === this.choiceQuestion.single.type
-              || this.question.type === this.choiceQuestion.list.type
-              || this.question.type === this.choiceQuestion.scoreSingle.type);
-          },
-
-          /**
-           * 填空题
-           * 单项填空
-           * 矩阵填空
-           * 表格填空
-           */
-          isCompletionQuestion: function(){
-            return (this.question.type === this.completionQuestion.single.type
-              || this.question.type === this.completionQuestion.matrix.type
-              || this.question.type === this.completionQuestion.table.type);
-          },
-
-          /**
-           * 矩阵题
-           * 矩阵单选
-           * 矩阵多选
-           * 表格填空
-           */
-          isMatrixQuestion: function(){
-            return (this.question.type === this.matrixQuestion.single.type
-              || this.question.type === this.matrixQuestion.multiple.type
-              || this.question.type === this.completionQuestion.table.type
-              || this.question.type === this.matrixQuestion.score.type);
-          },
-
-          /**
-           * 矩阵表格
-           */
-          isMatrixTableQuestion: function(){
-            return this.question.type === this.completionQuestion.table.type;
-          },
-          /**
-           * 判断是否为评分题
-           * 单项评分
-           * 多项评分
-           */
-          isScoreQuestion: function(){
-            return (this.question.type === this.scoreQuestion.single.type
-              || this.question.type === this.scoreQuestion.multiple.type);
-          },
-
-          /**
-           * 其他题型，
-           * 排序题
-           */
-          isOthers: function(){
-            return this.question.type === this.others.sort.type;
-          },
-
-          /**
-           * 排序题
-           */
-          isSortQuestion: function(){
-            return this.question.type === this.others.sort.type;
-          }
         },
 
         methods: {
 
-          // 上传图片
-          onUploadFile: function(file, editor, index){
+            // 上传图片
+            onUploadFile: function (file, editor, index) {
 
-            this.$emit('upload-file', file, editor, index);
+                this.$emit('upload-file', file, editor, index);
 
-          },
+            },
 
 
-          // 通过问题ID获取问题
-          getQuestionById: function(qid){
+            // 通过问题ID获取问题
+            getQuestionById: function (qid) {
 
-            // 对依赖的问题进行显示。。。
-            for(let sections of this.sections){
-              //
-              for(let fragment of sections['fragments']){
+                // 对依赖的问题进行显示。。。
+                for (let sections of this.sections) {
+                    //
+                    for (let fragment of sections['fragments']) {
 
-                if(fragment.id === qid){
-                  return fragment;
+                        if (fragment.id === qid) {
+                            return fragment;
+                        }
+
+                    }
                 }
 
-              }
-            }
+                return null;
 
-            return null;
+            },
 
-          },
-
-          onChangeValue: function(q){
-            this.$emit('change-value', q);
-          },
+            onChangeValue: function (q) {
+                this.$emit('change-value', q);
+            },
 
 
-           /**
-           * 在此题后插入新题
-           */
-          insertItem: function () {
+            /*重置问题类型*/
+            resetUserAnswer: function(q){
 
-            this.$emit('insert', this.question);
-          },
+                console.info('resetUserAnswer', q);
 
-          /**
-           * 取消插入点
-           */
-          cancelInsertItem: function () {
-            this.$emit('cancel-insert');
-          },
+                if(q.type === this.scoreQuestion.single.type){
+                    this.$set(q, 'userAnswer', 0);
+                } else if(typeof q.userAnswer === 'string'){
+                    this.$set(q, 'userAnswer', '');
+                } else if(q.userAnswer instanceof Array){
 
-          /**
-           * 编辑
-           * @param id
-           * @param e
-           */
-          editItem: function(){
+                    if(q.userAnswer[0] instanceof Array){
 
-            this.$emit('edit', this.question);
-          },
+                        if(q.type === this.completionQuestion.table.type){
 
-          /**
-           * 复制
-           * @param id
-           * @param e
-           */
-          duplicateItem: function(){
-            this.$emit('duplicate', this.question);
-          },
+                            let array = [];
+                            for(let i = 0; i < q.userAnswer.length; i++){
+                                array[i] = [];
+                                for(let j = 0; j < q.answer.length; j++){
+                                    array[i][j] = '';
+                                }
 
-          /**
-           * 删除
-           * @param id
-           * @param e
-           */
-          removeItem: function(){
-            this.$emit('remove', this.question);
-          },
+                            }
 
-          /**
-           * 上移
-           * @param id
-           * @param e
-           */
-          moveUp: function(){
-            this.$emit('move-up', this.question);
-          },
+                            this.$set(q, 'userAnswer', array);
 
-          /**
-           * 下移
-           * @param id
-           * @param e
-           */
-          moveDown: function(){
-            this.$emit('move-down', this.question);
-          },
+                        } else {
 
-          /**
-           * 移到开头
-           * 如果是第一个，则提示，第一题不能再上移啦
-           * @param id
-           * @param e
-           */
-          moveToFirst: function(){
-            this.$emit('move-to-first', this.question);
-          },
+                            for(let item of q.userAnswer){
+                                item.splice(0, item.length);
+                            }
 
-          /**
-           * 移到结尾
-           * 如果最后第一个，则提示，最后一题不能再下移啦
-           * @param id
-           * @param e
-           */
-          moveToLast: function(){
-            this.$emit('move-to-last', this.question);
-          },
-
-          /**
-           * 完成编辑
-           */
-          finishEdit: function () {
-            this.$delete(this.question, 'editing');
-
-            console.info('finishEdit', this.question);
-            this.$emit('finish-edit', this.question);
-          },
-
-          /**
-           * 改变问题类型
-           */
-          onChangeQuestionType: function(){
-
-            switch (this.question.type) {
-              case this.choiceQuestion.single.type:
-              case this.choiceQuestion.list.type:
-                this.$set(this.question, 'userAnswer', '');
-                break;
-              case this.choiceQuestion.multiple.type:
-                this.$set(this.question, 'userAnswer', []);
-                break;
-              case this.completionQuestion.single.type:
-                // 单项填空
-                this.$set(this.question, 'userAnswer', '');
-                // 清空answer
-                delete this.question.answer;
-                break;
-              case this.completionQuestion.matrix.type:
-                // 矩阵填空
-                this.$set(this.question, 'userAnswer', []);
-                // 添加矩阵answer
-                this.question['answer'] = this.completionQuestion.matrix.answer;
-                break;
-              case this.completionQuestion.table.type:
-                // 表格填空
-                this.$set(this.question, 'userAnswer', [[], []]);
-                this.question['horizontal'] = this.completionQuestion.table.horizontal;
-                this.question['vertical'] = this.completionQuestion.table.vertical;
-
-                // 清空answer
-                delete this.question.answer;
-                break;
-              case this.scoreQuestion.single.type:
-                this.$set(this.question, 'userAnswer', 0);
-                // 只保留一个选项
-                console.info(this.question);
-
-                this.$set(this.question, 'vertical', this.question.vertical.splice(0, 1));
-
-                break;
-              case this.scoreQuestion.multiple.type:
-
-                let array = [];
-                for(let i = 0; i < this.question.vertical.length; i++){
-                  array.push(0);
-                }
-
-                this.$set(this.question, 'userAnswer', array);
-                break;
-            }
-
-            //
-            this.$emit('change-question-type', this.question);
-
-          },
+                        }
 
 
-          /*问题被修改*/
-          onTitleChange: function(content){
-            this.$set(this.question, 'title', content);
-          }
-        },
+                    } else {
 
-      destroyed() {
+                        if(q.type === this.scoreQuestion.multiple.type || q.type === 8){
 
-          this.$set(this.question, 'userAnswer', this.userAnswerBackup);
+                            for(let i = 0; i < q.userAnswer.length; i++){
 
-          // 判断是否有问题依赖这个问题
-          for(let section of this.sections){
+                                if(q.type === this.scoreQuestion.multiple.type){
+                                    q.userAnswer[i] = 0;
+                                } else if(q.type === this.completionQuestion.matrix.type){
+                                    q.userAnswer[i] = '';
+                                }
+                            }
 
-            for(let fragment of section['fragments']){
-
-              if(!!fragment.dependent && !!fragment.dependent.length){
-
-
-                for(let dq of fragment.dependent) {
-
-                  if(dq.question.id === this.question.id){
-                    // 依赖本问题
-                    // let q = this.getQuestionById(dq.question.id);
-
-                    if(!!fragment){
-                      // 依赖的问题重置显示
-                      if(!!fragment['dependentShow']){
-                        this.$delete(fragment, 'dependentShow');
-                      }
+                        } else {
+                            q.userAnswer.splice(0, q.userAnswer.length);
+                        }
 
                     }
 
-                  }
 
                 }
 
-              }
+
+            },
+
+            /**
+             * 跳转到指定的序号
+             */
+            forwardSequence: function (sequence, reset) {
+
+                for (let sections of this.sections) {
+                    //
+                    for (let fragment of sections['fragments']) {
+
+                        // 重置
+                        if (!!reset) {
+
+                            if (fragment.sequence > this.question.sequence && (fragment.sequence < sequence || sequence === -1) /*跳到问卷末尾结束作答*/) {
+
+                                this.$delete(fragment, 'hide');
+                                this.$delete(fragment, 'hideCausedBy');
+
+                            }
+
+                        } else {
+
+                            // 设置
+                            // question=1    hide=2   sequence=3
+                            // question=1    hide=2,3   sequence=4
+                            // question=1    hide=2,3,4   sequence=5
+                            if (fragment.sequence > this.question.sequence && (fragment.sequence < sequence || sequence === -1)/*跳到问卷末尾结束作答*/) {
+
+                                this.$set(fragment, 'hide', true);
+
+                                if (sequence === -2) {
+                                    // 直接提交为无效答卷
+                                    this.$set(fragment, 'hideCausedBy', 'discard');
+                                } else if (sequence === -1) {
+                                    // 跳到问卷末尾结束作答
+                                    this.$set(fragment, 'hideCausedBy', 'finish');
+                                } else {
+                                    // 范围
+                                    this.$set(fragment, 'hideCausedBy', 'range');
+                                }
+
+                                // 重置答案
+                                this.resetUserAnswer(fragment);
+
+
+                                console.info('hide', fragment);
+
+                            }
+
+                        }
+                    }
+                }
+
+            },
+
+            /**
+             * 处理跳转
+             */
+            handleForward: function () {
+
+                console.info('handleForward', this.sections);
+
+                // 判断是否有跳题
+                // 如果有跳题的话，需要将两题之间的题目隐藏
+                if (!!this.question.forwardType) {
+
+                    // 如果不是默认的跳题类型，则需要跳题，
+                    if (this.question.forwardType === 1) {
+                        // 无条件跳转，
+                        // this.question.forward <===> question.sequence
+
+                        // 跳转到指定的题号
+                        this.forwardSequence(this.question.forward);
+
+
+                    } else if (this.question.forwardType === 2) {
+                        // 选项跳转
+                        // this.question.answer.forward <===> question.sequence
+
+
+                        // 清空选中的情况
+                        if (!!this.lastValue) {
+                            // lastValue = index + 1;
+                            let answer = this.question.answer[this.lastValue - 1];
+                            if (!!answer['forward']) {
+                                // 清空当前的值到上一次的
+                                this.forwardSequence(answer['forward'], true);
+                            }
+                        }
+
+
+                        // 跳转到指定的题号
+                        for (let i = 0; i < this.question.answer.length; i++) {
+
+                            let answer = this.question.answer[i];
+
+                            if ((i + 1) === this.question.userAnswer && !!answer.forward) {
+                                //
+                                this.forwardSequence(answer.forward);
+                                break;
+
+                            } else {
+
+                                this.forwardSequence(answer.forward, true);
+                            }
+
+                        }
+                    }
+
+                } else {
+
+                    this.forwardSequence(undefined, true);
+
+                }
+
+            },
+
+
+            /**
+             * 在此题后插入新题
+             */
+            insertItem: function () {
+
+                this.$emit('insert', this.question);
+            },
+
+            /**
+             * 取消插入点
+             */
+            cancelInsertItem: function () {
+                this.$emit('cancel-insert');
+            },
+
+            /**
+             * 编辑
+             * @param id
+             * @param e
+             */
+            editItem: function () {
+
+                this.$emit('edit', this.question);
+            },
+
+            /**
+             * 复制
+             * @param id
+             * @param e
+             */
+            duplicateItem: function () {
+                this.$emit('duplicate', this.question);
+            },
+
+            /**
+             * 删除
+             * @param id
+             * @param e
+             */
+            removeItem: function () {
+                this.$emit('remove', this.question);
+            },
+
+            /**
+             * 上移
+             * @param id
+             * @param e
+             */
+            moveUp: function () {
+                this.$emit('move-up', this.question);
+            },
+
+            /**
+             * 下移
+             * @param id
+             * @param e
+             */
+            moveDown: function () {
+                this.$emit('move-down', this.question);
+            },
+
+            /**
+             * 移到开头
+             * 如果是第一个，则提示，第一题不能再上移啦
+             * @param id
+             * @param e
+             */
+            moveToFirst: function () {
+                this.$emit('move-to-first', this.question);
+            },
+
+            /**
+             * 移到结尾
+             * 如果最后第一个，则提示，最后一题不能再下移啦
+             * @param id
+             * @param e
+             */
+            moveToLast: function () {
+                this.$emit('move-to-last', this.question);
+            },
+
+            /**
+             * 完成编辑
+             */
+            finishEdit: function () {
+                this.$delete(this.question, 'editing');
+
+                console.info('finishEdit', this.question);
+                this.$emit('finish-edit', this.question);
+            },
+
+            /**
+             * 改变问题类型
+             */
+            onChangeQuestionType: function () {
+
+                switch (this.question.type) {
+                    case this.choiceQuestion.single.type:
+                    case this.choiceQuestion.list.type:
+                        this.$set(this.question, 'userAnswer', '');
+                        break;
+                    case this.choiceQuestion.multiple.type:
+                        this.$set(this.question, 'userAnswer', []);
+                        break;
+                    case this.completionQuestion.single.type:
+                        // 单项填空
+                        this.$set(this.question, 'userAnswer', '');
+                        // 清空answer
+                        delete this.question.answer;
+                        break;
+                    case this.completionQuestion.matrix.type:
+                        // 矩阵填空
+
+                        // 添加矩阵answer
+                        this.$set(this.question, 'answer', this.completionQuestion.matrix.answer);
+
+                        {
+                            let array = [];
+                            for(let i = 0; i < this.question.answer.length; i++){
+                                array[i] = '';
+                            }
+
+                            this.$set(this.question, 'userAnswer', array);
+                        }
+
+                        break;
+                    case this.completionQuestion.table.type:
+                        // 表格填空
+                        this.$set(this.question, 'answer', this.completionQuestion.table.answer);
+                        this.$set(this.question, 'vertical', this.completionQuestion.table.vertical);
+
+                        {
+                            let array = [];
+                            for(let i = 0; i < this.question.vertical.length; i++){
+                                array[i] = [];
+                                for(let j = 0; j < this.question.horizontal.length; j++){
+                                    array[i][j] = "";
+                                }
+                            }
+
+                            this.$set(this.question, 'userAnswer', array);
+                        }
+
+                        break;
+                    case this.scoreQuestion.single.type:
+                        this.$set(this.question, 'userAnswer', 0);
+                        // 只保留一个选项
+                        console.info(this.question);
+
+                        this.$set(this.question, 'vertical', this.question.vertical.splice(0, 1));
+
+                        break;
+                    case this.scoreQuestion.multiple.type:
+
+                        let array = [];
+                        for (let i = 0; i < this.question.vertical.length; i++) {
+                            array.push(0);
+                        }
+
+                        this.$set(this.question, 'userAnswer', array);
+                        break;
+                }
+
+                //
+                this.$emit('change-question-type', this.question);
+
+            },
+
+
+            /*问题被修改*/
+            onTitleChange: function (content) {
+                this.$set(this.question, 'title', content);
+            }
+        },
+
+        destroyed() {
+
+            this.$set(this.question, 'userAnswer', this.userAnswerBackup);
+
+            // 判断是否有问题依赖这个问题
+            for (let section of this.sections) {
+
+                for (let fragment of section['fragments']) {
+
+                    if (!!fragment.dependent && !!fragment.dependent.length) {
+
+
+                        for (let dq of fragment.dependent) {
+
+                            if (dq.question.id === this.question.id) {
+                                // 依赖本问题
+                                // let q = this.getQuestionById(dq.question.id);
+
+                                if (!!fragment) {
+                                    // 依赖的问题重置显示
+                                    if (!!fragment['dependentShow']) {
+                                        this.$delete(fragment, 'dependentShow');
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
             }
 
-          }
-
-      }
+        }
     }
 </script>
 

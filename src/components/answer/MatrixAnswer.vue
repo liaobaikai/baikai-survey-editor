@@ -46,6 +46,7 @@
               <el-radio
                 class="answer-item only-radio"
                 v-model="question.userAnswer[index]"
+                @change="changeValue"
                 :label="index2 + 1"
                 :name="'answer-' + question.id + '-' + index"
                 :key="h" :disabled="!!readonly"></el-radio>
@@ -95,6 +96,7 @@
               <el-checkbox
                 class="answer-item only-checkbox"
                 v-model="question.userAnswer[index]"
+                @change="changeValue"
                 :label="index2 + 1"
                 :name="'answer-' + question.id + '-' + index"
                 :key="h" :disabled="!!readonly"></el-checkbox>
@@ -143,6 +145,7 @@
 
               <el-select
                 v-model="question.userAnswer[index][index2]"
+                @change="changeValue"
                 :disabled="!!readonly" style="width: 100px;">
 
                 <el-option
@@ -168,41 +171,42 @@
      单项评分题
      多项评分题
      -->
-    <template v-else-if="isMatrixScoreSingle || isMatrixScoreMultiple">
+<!--    <template v-else-if="isMatrixScoreSingle || isMatrixScoreMultiple">-->
 
-      <table>
+<!--      <table>-->
 
-        <!-- 每一个答案 -->
-        <tr v-for="(v,index) in question.vertical">
+<!--        &lt;!&ndash; 每一个答案 &ndash;&gt;-->
+<!--        <tr v-for="(v,index) in question.vertical">-->
 
-          <td class="table-vertical title" style="width: 30%">
-            <span>{{v}}</span>
-          </td>
+<!--          <td class="table-vertical title" style="width: 30%">-->
+<!--            <span>{{v}}</span>-->
+<!--          </td>-->
 
-          <!-- 评分 -->
-          <td style="width: 130px;">
+<!--          &lt;!&ndash; 评分 &ndash;&gt;-->
+<!--          <td style="width: 130px;">-->
 
-            <el-rate
-              v-model="question.userAnswer[index]"
-              :colors="question.colors"  :disabled="!!readonly">
-            </el-rate>
+<!--            <el-rate-->
+<!--              v-model="question.userAnswer[index]"-->
+<!--              @change="changeValue"-->
+<!--              :colors="question.colors"  :disabled="!!readonly">-->
+<!--            </el-rate>-->
 
-          </td>
+<!--          </td>-->
 
-          <td>
-            <span style="color: #efa030; font-size: 14px;">(分值: {{question.userAnswer[index]}})</span>
-          </td>
+<!--          <td>-->
+<!--            <span style="color: #efa030; font-size: 14px;">(分值: {{question.userAnswer[index]}})</span>-->
+<!--          </td>-->
 
 
-        </tr>
+<!--        </tr>-->
 
-      </table>
+<!--      </table>-->
 
-    </template>
+<!--    </template>-->
 
 
   </div>
-    
+
 </template>
 
 <script>
@@ -213,7 +217,8 @@
       props: ['question', 'readonly'],
       data: function () {
           return {
-            matrixQuestion: questionTemplate.matrixQuestion,
+              matrixQuestion: questionTemplate.matrixQuestion,
+              // choiceQuestion: questionTemplate.choiceQuestion,
           }
         },
       computed: {
@@ -228,15 +233,15 @@
           return this.question.type === this.matrixQuestion.multiple.type;
         },
 
-        // 单项评分
-        isMatrixScoreSingle: function(){
-          return this.question.type === this.matrixQuestion.scoreSingle.type;
-        },
-
-        // 多项评分
-        isMatrixScoreMultiple: function(){
-          return this.question.type === this.matrixQuestion.scoreMultiple.type;
-        },
+        // // 单项评分
+        // isMatrixScoreSingle: function(){
+        //   return this.question.type === this.choiceQuestion.scoreSingle.type;
+        // },
+        //
+        // // 多项评分
+        // isMatrixScoreMultiple: function(){
+        //   return this.question.type === this.choiceQuestion.scoreMultiple.type;
+        // },
 
         // 矩阵评分题
         isMatrixScore: function(){
@@ -244,6 +249,55 @@
         }
       },
       methods: {
+
+          changeValue(){
+
+              // switch (this.question.type) {
+              //
+              //     case this.matrixQuestion.single.type:
+              //         // 评分单选
+              //
+              //         this.$emit('handle-forward');
+              //         break;
+              //     case this.matrixQuestion.multiple.type:
+              //
+              //         if(this.question.userAnswer.length > 0){
+              //             console.info('选中答案了。。。')
+              //             this.$emit('handle-forward');
+              //         } else {
+              //             console.info('没选中答案。。。')
+              //             this.$emit('handle-forward-seq', this.question['forward'], true);
+              //         }
+              //
+              //         break;
+              //
+              //     case this.matrixQuestion.score.type:
+              //         break;
+              //
+              // }
+
+              let flag = true;
+              for(let i = 0; i < this.question.vertical.length; i++){
+
+                  // array
+                  const item = this.question.userAnswer[i];
+
+                  if(item.length === 0){
+                      flag = false;
+                      break;
+                  }
+
+              }
+
+              if(flag){
+                  this.$emit('handle-forward');
+              } else {
+                  this.$emit('handle-forward-seq', this.question['forward'], true);
+              }
+
+
+          }
+
       }
     }
 </script>

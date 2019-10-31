@@ -19,7 +19,9 @@
           || question.dataType === 1
           || question.dataType === 2">
 
-        <el-checkbox v-model="limitRange" style="margin-left: 1rem; font-weight: normal">限制范围</el-checkbox>
+        <el-checkbox v-model="limitRange" style="margin-left: 1rem; font-weight: normal" :true-label="1"
+                     :false-label="0">限制范围
+        </el-checkbox>
 
         <!-- 限制范围 -->
         <span class="range" v-if="limitRange">
@@ -89,7 +91,8 @@
         <el-option label="25%" :value="4"></el-option>
       </el-select>
 
-      <el-checkbox style="margin-left: 2rem" v-model="question.underlineStyle">下划线样式</el-checkbox>
+      <el-checkbox style="margin-left: 2rem" v-model="question.underlineStyle" :true-label="1" :false-label="0">下划线样式
+      </el-checkbox>
 
 
     </div>
@@ -103,72 +106,90 @@
         <div style="">
           <table cellpadding="0" cellspacing="0" style="width: 100%">
             <tr>
-              <th><div>列标题</div></th>
-              <th style="width: 120px"><div style="text-align: center">验证属性</div></th>
-              <th style="width: 300px"><div style="text-align: center">范围</div></th>
+              <th>
+                <div>列标题</div>
+              </th>
+              <th style="width: 120px">
+                <div style="text-align: center">验证属性</div>
+              </th>
+              <th style="width: 300px">
+                <div style="text-align: center">范围</div>
+              </th>
             </tr>
             <template v-if="isMatrixCompletion">
               <tr v-for="answer of question.answer">
-                <th><div>{{answer.answer}}</div></th>
-                <th><div style="text-align: center">
-                  <el-select v-model="answer.dataType" style="width: 120px">
-                    <el-option v-for="(dataType, index) of completionDataTypes"
-                               :label="dataType"
-                               :value="index"
-                               :key="index"></el-option>
-                  </el-select>
-                </div></th>
-                <th><div style="text-align: center">
+                <th>
+                  <div>{{answer.answer}}</div>
+                </th>
+                <th>
+                  <div style="text-align: center">
+                    <el-select v-model="answer.dataType" style="width: 120px">
+                      <el-option v-for="(dataType, index) of completionDataTypes"
+                                 :label="dataType"
+                                 :value="index"
+                                 :key="index"></el-option>
+                    </el-select>
+                  </div>
+                </th>
+                <th>
+                  <div style="text-align: center">
 
-                  <template v-if="answer.dataType === 0 || answer.dataType === 1 || answer.dataType === 2">
+                    <template v-if="answer.dataType === 0 || answer.dataType === 1 || answer.dataType === 2">
 
                     <span class="title" style="font-weight: normal">
                       <template v-if="answer.dataType === 0">最小字数</template>
                       <template v-else>最小值</template>
                     </span>
 
-                    <el-input v-model="answer.dataMin" style="width: 60px"/>
+                      <el-input v-model="answer.dataMin" style="width: 60px"/>
 
-                    <span class="title" style="margin-left: 0.5rem; font-weight: normal">
+                      <span class="title" style="margin-left: 0.5rem; font-weight: normal">
                       <template v-if="answer.dataType === 0">最大字数</template>
                       <template v-else>最大值</template>
                     </span>
-                    <el-input v-model="answer.dataMax" style="width: 60px"/>
+                      <el-input v-model="answer.dataMax" style="width: 60px"/>
 
-                  </template>
-                </div></th>
+                    </template>
+                  </div>
+                </th>
               </tr>
             </template>
             <template v-else-if="isTableCompletion">
               <tr v-for="answer of question.answer">
-                <th><div>{{answer.answer}}</div></th>
-                <th><div style="text-align: center">
-                  <el-select v-model="answer.dataType" style="width: 120px">
-                    <el-option v-for="(dataType, index) of completionDataTypes"
-                               :label="dataType"
-                               :value="index"
-                               :key="index"></el-option>
-                  </el-select>
-                </div></th>
-                <th><div style="text-align: center">
+                <th>
+                  <div>{{answer.answer}}</div>
+                </th>
+                <th>
+                  <div style="text-align: center">
+                    <el-select v-model="answer.dataType" style="width: 120px">
+                      <el-option v-for="(dataType, index) of completionDataTypes"
+                                 :label="dataType"
+                                 :value="index"
+                                 :key="index"></el-option>
+                    </el-select>
+                  </div>
+                </th>
+                <th>
+                  <div style="text-align: center">
 
-                  <template v-if="answer.dataType === 0 || answer.dataType === 1 || answer.dataType === 2">
+                    <template v-if="answer.dataType === 0 || answer.dataType === 1 || answer.dataType === 2">
 
                     <span class="title" style="font-weight: normal">
                       <template v-if="answer.dataType === 0">最小字数</template>
                       <template v-else>最小值</template>
                     </span>
 
-                    <el-input v-model="answer.dataMin" style="width: 60px"/>
+                      <el-input v-model="answer.dataMin" style="width: 60px"/>
 
-                    <span class="title" style="margin-left: 0.5rem; font-weight: normal">
+                      <span class="title" style="margin-left: 0.5rem; font-weight: normal">
                       <template v-if="answer.dataType === 0">最大字数</template>
                       <template v-else>最大值</template>
                     </span>
-                    <el-input v-model="answer.dataMax" style="width: 60px"/>
+                      <el-input v-model="answer.dataMax" style="width: 60px"/>
 
-                  </template>
-                </div></th>
+                    </template>
+                  </div>
+                </th>
               </tr>
             </template>
           </table>
@@ -183,7 +204,7 @@
 
 
   </div>
-    
+
 </template>
 
 <script>
@@ -194,231 +215,259 @@
 
     export default {
         name: "CompletionEditor",
-      props: ['question'],
-      data: function(){
-          return {
-            columnPropertiesVisible: false, // 设置列属性
-            completionDataTypes: completionDataTypes,
-            questionTemplate: questionTemplate,
+        props: ['question'],
+        data: function () {
+            return {
+                columnPropertiesVisible: false, // 设置列属性
+                completionDataTypes: completionDataTypes,
+                questionTemplate: questionTemplate,
 
-            completionQuestion: questionTemplate.completionQuestion,
-
-
-            rows: 0,
-            limitRange: '',
-            heights: [1, 2, 3, 4, 5, 10],
-            horizontal: '', // 表格填空题水平
-            vertical: '',  // 表格填空题的垂直
-
-          }
-      },
-
-      computed: {
-
-        isSingleCompletion: function(){
-          return this.question.type === this.completionQuestion.single.type;
-        },
-
-        isMatrixCompletion: function(){
-          return this.question.type === this.completionQuestion.matrix.type;
-        },
-
-        isTableCompletion: function(){
-          return this.question.type === this.completionQuestion.table.type;
-        },
-      },
-
-      mounted: function(){
-
-        this.initVertical();
-        this.initHorizontal();
-
-      },
-      methods: {
-
-        // 初始化行数据
-        initVertical: function(){
-
-          this.vertical = '';
-          switch (this.question.type) {
-            case this.completionQuestion.matrix.type:
-              // 矩阵填空
-              for(let answer of this.question.answer){
-                this.vertical += answer.answer + '\n';
-              }
-              break;
-            case this.completionQuestion.table.type:
-              // 表格填空
-              for(let v of this.question.vertical){
-                this.vertical += v + '\n';
-              }
+                completionQuestion: questionTemplate.completionQuestion,
 
 
-              break;
-          }
-
-        },
-
-        // 初始化列数据
-        initHorizontal: function(){
-
-          this.horizontal = '';
-          if(this.question.type === this.completionQuestion.table.type){
-
-            for(let answer of this.question.answer){
-              this.horizontal += answer.answer + '\n';
-            }
-
-          }
-
-        },
-
-        /**
-         * 修改行标题
-         */
-        changeVertical: function(){
-
-          let verticals = this.vertical.split(/[(\r\n)\r\n]+/);
-
-          // 实际长度
-          let len = 0;
-
-          this.$set(this.question, 'userAnswer', []);
-
-          for(let i = 0; i < verticals.length; i++){
-            if(!!verticals[i]){
-              len++; // 实际长度
-
-              switch (this.question.type) {
-                case this.completionQuestion.matrix.type:
-
-                  let answer = this.question.answer[i];
-
-                  if(!!answer){
-
-                    if(answer.answer !== verticals[i]){
-                      answer.answer = verticals[i];
-                    }
-
-                  } else {
-
-                    // 复制模板
-                    let template = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.matrix.answer[0]));
-                    template.answer = verticals[i];
-
-                    this.question.answer.push(template);
-                  }
-
-                  break;
-
-                case this.completionQuestion.table.type:
-                  //
-                  let vertical = this.question.vertical[i];
-                  if(!!vertical){
-                    if(vertical !== verticals[i]){
-                      this.$set(this.question.vertical, i, verticals[i]);
-                    }
-                  } else {
-                    this.question.vertical.splice(i + 1, 0, verticals[i]);
-                  }
-
-                  this.question.userAnswer.push([]);
-
-                  break;
-              }
+                rows: 0,
+                limitRange: '',
+                heights: [1, 2, 3, 4, 5, 10],
+                horizontal: '', // 表格填空题水平
+                vertical: '',  // 表格填空题的垂直
 
             }
-
-          }
-
-          if (this.question.type === this.completionQuestion.matrix.type) {
-
-            if(len < this.question.answer.length){
-              // 删除后面的
-              this.question.answer.splice(len, (this.question.answer.length - len));
-            }
-
-            if(len === 0){
-              this.question.answer = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.matrix.answer));
-              this.initVertical();
-            }
-
-          } else if(this.question.type === this.completionQuestion.table.type){
-
-            if(len < this.question.vertical.length){
-              // 删除后面的
-              this.question.vertical.splice(len, (this.question.vertical.length - len));
-            }
-
-            if(len === 0){
-              this.question.vertical = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.vertical));
-              this.initVertical();
-            }
-
-          }
-
         },
 
-        /**
-         * 修改列标题
-         */
-        changeHorizontal: function(){
+        computed: {
 
-          let horizontals = this.horizontal.split(/[(\r\n)\r\n]+/);
+            isSingleCompletion: function () {
+                return this.question.type === this.completionQuestion.single.type;
+            },
 
-          // 实际长度
-          let len = 0;
+            isMatrixCompletion: function () {
+                return this.question.type === this.completionQuestion.matrix.type;
+            },
 
-          for(let i = 0; i < horizontals.length; i++) {
-            if (!!horizontals[i]) {
-              len++; // 实际长度
+            isTableCompletion: function () {
+                return this.question.type === this.completionQuestion.table.type;
+            },
+        },
 
-              let answer = this.question.answer[i];
-              if(!!answer){
+        mounted: function () {
 
-                if(answer.answer !== horizontals[i]){
-                  answer.answer = horizontals[i];
+            this.initVertical();
+            this.initHorizontal();
+
+        },
+        methods: {
+
+            // 初始化行数据
+            initVertical: function () {
+
+                this.vertical = '';
+                switch (this.question.type) {
+                    case this.completionQuestion.matrix.type:
+                        // 矩阵填空
+                        for (let answer of this.question.answer) {
+                            this.vertical += answer.answer + '\n';
+                        }
+                        break;
+                    case this.completionQuestion.table.type:
+                        // 表格填空
+                        for (let v of this.question.vertical) {
+                            this.vertical += v + '\n';
+                        }
+
+
+                        break;
                 }
 
-              } else {
+            },
 
-                let template = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.answer[0]));
-                template.answer = horizontals[i];
+            // 初始化列数据
+            initHorizontal: function () {
 
-                this.question.answer.push(template);
-              }
+                this.horizontal = '';
+                if (this.question.type === this.completionQuestion.table.type) {
 
-            }
+                    for (let answer of this.question.answer) {
+                        this.horizontal += answer.answer + '\n';
+                    }
 
-          }
+                }
 
-          if(len < this.question.answer.length){
-            // 删除后面的
-            this.question.answer.splice(len, (this.question.answer.length - len));
-          }
+            },
 
-          if(len === 0){
-            this.question.answer = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.answer));
-            this.initHorizontal();
-          }
+            /**
+             * 修改行标题
+             */
+            changeVertical: function () {
 
-        },
+                let verticals = this.vertical.split(/[(\r\n)\r\n]+/);
 
-        changeRows: function(type){
-          switch (type) {
-            case 1:
-              if(this.question.rows === -1 && !!this.rows){
-                this.question.dataRows = this.rows;
-              }
-              break;
-            case 2:
-              this.question.dataRows = this.rows;
+                // 实际长度
+                let len = 0, userAnswer = [];
 
-              break;
-          }
+                this.$set(this.question, 'userAnswer', userAnswer);
 
-        },
-      }
+                switch (this.question.type) {
+
+                    case this.completionQuestion.matrix.type:
+
+                        for (let i = 0; i < verticals.length; i++) {
+
+                            if (!!verticals[i]) {
+                                len++; // 实际长度
+                            }
+
+                            let answer = this.question.answer[i];
+
+                            if (!!answer) {
+
+                                if (answer.answer !== verticals[i]) {
+                                    this.$set(answer, 'answer', verticals[i]);
+                                }
+
+                            } else {
+
+                                // 复制模板
+                                let template = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.matrix.answer[0]));
+                                template.answer = verticals[i];
+
+                                this.question.answer.push(template);
+                            }
+
+                            userAnswer[i] = '';
+
+                        }
+
+                        break;
+
+                    case this.completionQuestion.table.type:
+                        //
+                        for (let i = 0; i < verticals.length; i++) {
+
+                            if (!!verticals[i]) {
+                                len++; // 实际长度
+                            }
+                            let vertical = this.question.vertical[i];
+                            if (!!vertical) {
+                                if (vertical !== verticals[i]) {
+                                    this.$set(this.question.vertical, i, verticals[i]);
+                                }
+                            } else {
+                                this.question.vertical.splice(i + 1, 0, verticals[i]);
+                            }
+
+                            userAnswer.splice(i, 0, []);
+
+                        }
+
+                        break;
+
+                }
+
+
+                if (this.question.type === this.completionQuestion.matrix.type) {
+
+                    if (len < this.question.answer.length) {
+                        // 删除后面的
+                        this.question.answer.splice(len, (this.question.answer.length - len));
+                    }
+
+                    if (len === 0) {
+                        this.$set(this.question, 'answer', JSON.parse(JSON.stringify(questionTemplate.completionQuestion.matrix.answer)));
+                        this.initVertical();
+                    }
+
+                } else if (this.question.type === this.completionQuestion.table.type) {
+
+                    if (len < this.question.vertical.length) {
+                        // 删除后面的
+                        this.question.vertical.splice(len, (this.question.vertical.length - len));
+                    }
+
+                    if (len === 0) {
+                        this.$set(this.question, 'vertical', JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.vertical)));
+                        this.initVertical();
+                    }
+
+                    this.initTableValues();
+
+                }
+
+            },
+
+            /**
+             * 修改列标题
+             */
+            changeHorizontal: function () {
+
+                let horizontals = this.horizontal.split(/[(\r\n)\r\n]+/);
+
+                // 实际长度
+                let len = 0;
+
+                for (let i = 0; i < horizontals.length; i++) {
+
+                    if (!!horizontals[i]) {
+                        len++; // 实际长度
+
+                        let answer = this.question.answer[i];
+                        if (!!answer) {
+
+                            if (answer.answer !== horizontals[i]) {
+                                answer.answer = horizontals[i];
+                            }
+
+                        } else {
+
+                            let template = JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.answer[0]));
+                            template.answer = horizontals[i];
+
+                            this.question.answer.push(template);
+                        }
+
+                    }
+
+                }
+
+                if (len < this.question.answer.length) {
+                    // 删除后面的
+                    this.question.answer.splice(len, (this.question.answer.length - len));
+                }
+
+                if (len === 0) {
+                    this.$set(this.question, 'answer', JSON.parse(JSON.stringify(questionTemplate.completionQuestion.table.answer)));
+                    this.initHorizontal();
+                }
+
+                this.initTableValues();
+
+            },
+
+            initTableValues(){
+                // 填充值
+                for (let x = 0; x < this.question.vertical.length; x++) {
+                    let item = this.question.userAnswer[x];
+                    for (let y = 0; y < this.question.answer.length; y++) {
+                        item[y] = "";
+                    }
+                }
+                console.info(this.question.userAnswer);
+            },
+
+            changeRows: function (type) {
+                switch (type) {
+                    case 1:
+                        if (this.question.rows === -1 && !!this.rows) {
+                            this.$set(this.question, 'dataRows', this.rows);
+                        }
+                        break;
+                    case 2:
+                        this.$set(this.question, 'dataRows', this.rows);
+
+                        break;
+                }
+
+            },
+        }
     }
 </script>
 

@@ -16,9 +16,11 @@
         <li class="answer-item-wrapper" style="width: 100%">
 
           <template v-if="question.dataType === 0">
+
               <el-input
                 class="answer-item"
                 type="textarea"
+                @input.native="changeText"
                 v-if="question.dataRows > 1"
                 :rows="question.dataRows"
                 v-model="question.userAnswer"
@@ -30,6 +32,7 @@
             <el-input
               class="answer-item"
               v-else="!!!question.dataRows || question.dataRows === 1"
+              @input.native="changeText"
               v-model="question.userAnswer"
               :maxlength="question.dataMax"
               :style="{ width: (100 / question.columns) + '%'}"
@@ -43,6 +46,7 @@
             v-else-if="question.dataType !== 3"
             v-model="question.userAnswer"
             :maxlength="question.dataMax"
+            @input.native="changeText"
             :style="{ width: (100 / question.columns) + '%'}"
             :class="[ !!question.underlineStyle ? 'completion-underline' : '' ]"
             :placeholder="completionDataTypesPlaceHolder[question.dataType]" :disabled="!!readonly">
@@ -124,6 +128,7 @@
               type="textarea"
               autosize
               :rows="question.dataRows"
+              @input.native="changeText"
               :maxlength="question.dataMax"
               :class="[ !!question.underlineStyle ? 'completion-underline' : '' ]"
               :style="{ width: (100 / question.columns) + '%'}"
@@ -164,6 +169,7 @@
                 style="margin: 0 auto; display: block"
                 autosize
                 :rows="question.dataRows"
+                @input.native="changeText"
                 :maxlength="question.dataMax"
                 :class="[ !!question.underlineStyle ? 'completion-underline' : '' ]"
                 :style="{ width: (100 / question.columns) + '%'}"
@@ -191,7 +197,7 @@
 
     export default {
         name: "CompletionAnswer",
-      props: ['question', 'editable', 'readonly'],
+      props: ['question', 'editable', 'readonly', 'sections'],
         data: function () {
           return {
             completionQuestion: questionTemplate.completionQuestion,
@@ -218,11 +224,84 @@
         },
 
         created(){
+            // console.info(this.question.userAnswer);
+        },
 
-
+        watch: {
+          'question.userAnswer': {
+              handler: function(newVal, oldVal){
+                  console.info(newVal)
+              },
+              immediate: true
+          }
         },
 
         methods: {
+
+            changeText(){
+                console.info('completedTable');
+
+                switch (this.question.type) {
+
+                    case this.completionQuestion.single.type:
+                        if(!!this.question.userAnswer){
+                            this.$emit('handle-forward');
+                        } else {
+                            this.$emit('handle-forward-seq', this.question['forward'], true);
+                        }
+                        break;
+
+                    case this.completionQuestion.matrix.type:
+                        // 全部填写完毕
+
+                        let flag = true;
+                        for(let i = 0; i < this.question.answer.length; i++){
+                            if(!!!this.question.userAnswer[i]){
+                                flag = false;
+                                break;
+                            }
+                        }
+
+                        if(flag){
+                            this.$emit('handle-forward');
+                        } else {
+                            this.$emit('handle-forward-seq', this.question['forward'], true);
+                        }
+
+                        break;
+
+                    case this.completionQuestion.table.type:
+
+                        let flag2 = true;
+                        console.info(JSON.stringify(this.question.userAnswer))
+
+                        for(let i = 0; i < this.question.vertical.length; i++){
+                            const item = this.question.userAnswer[i];
+                            if(!!!item) continue
+                            for(let j = 0; j < this.question.answer.length; j++){
+                                const value = item[j];
+                                if(!!!value){
+                                    flag2 = false;
+                                    break;
+                                }
+                            }
+
+                        }
+
+                        if(flag2){
+                            this.$emit('handle-forward');
+                        } else {
+                            this.$emit('handle-forward-seq', this.question['forward'], true);
+                        }
+
+                        break;
+
+                }
+
+            },
+
+
+
 
         }
     }

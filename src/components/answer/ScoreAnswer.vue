@@ -27,12 +27,14 @@
               <template v-if="isSingle">
                 <el-rate
                   v-model="question.userAnswer"
+                  @change="changeValue"
                   :colors="colors" :disabled="!!readonly">
                 </el-rate>
               </template>
               <template v-else-if="isMultiple">
                 <el-rate
                   v-model="question.userAnswer[index]"
+                  @change="changeValue"
                   :colors="colors" :disabled="!!readonly">
                 </el-rate>
               </template>
@@ -51,7 +53,7 @@
     </template>
 
   </div>
-    
+
 </template>
 
 <script>
@@ -79,6 +81,37 @@
         }
       },
       methods: {
+
+          changeValue(){
+
+              switch (this.question.type) {
+
+                  case this.scoreQuestion.single.type:
+                      this.$emit('handle-forward');
+                      break;
+                  case this.scoreQuestion.multiple.type:
+
+                      let flag = true;
+
+                      for(let i = 0; i < this.question.vertical.length; i++){
+                          if(!!!this.question.userAnswer[i]){
+                              flag = false;
+                              break;
+                          }
+                      }
+
+                      if(flag){
+                          this.$emit('handle-forward');
+                      }
+
+                      break;
+
+              }
+
+
+
+          }
+
       }
     }
 </script>

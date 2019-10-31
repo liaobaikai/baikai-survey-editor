@@ -222,7 +222,7 @@
     export default {
       name: "SurveyEditor",
       components: {MyQuillEditor, SurveySection},
-      props: ['surveyData', 'interval', 'enableAutoSave', 'showSubmitAction'],
+      props: ['surveyData', 'interval', 'enableAutoSave', 'showSubmitAction', 'readonly'],
       data: function () {
 
         return {
@@ -252,7 +252,7 @@
           sequence: -1,
           currentSequence: 1,
           currentSectionSequence: 0,
-          readonly: false, // 只读
+          // readonly: false, // 只读
           insertPoint: {  // 插入点
             sectionIndex: -1,
             sectionId: null,
@@ -1062,21 +1062,24 @@
             for(let fragment of section['fragments']){
 
               if(!!fragment.userAnswer){
-                if(typeof fragment.userAnswer === 'string' || typeof fragment.userAnswer === 'number'){
-                  fragment.userAnswer = '';
-                } else if(typeof fragment.userAnswer === 'object'){
-                  for(let ua of fragment.userAnswer){
-                    if(typeof ua === 'string' || typeof ua === 'number'){
-                      ua = '';
-                    } else if(!!ua && typeof ua === 'object' && ua.length > 0){
-                      // ua.length = 0;
-                      ua.splice(0, ua.length);
-                    }
-                  }
+                // if(typeof fragment.userAnswer === 'string' || typeof fragment.userAnswer === 'number'){
+                //   fragment.userAnswer = '';
+                // } else if(typeof fragment.userAnswer === 'object'){
+                //   for(let ua of fragment.userAnswer){
+                //     if(typeof ua === 'string' || typeof ua === 'number'){
+                //       ua = '';
+                //     } else if(!!ua && typeof ua === 'object' && ua.length > 0){
+                //       // ua.length = 0;
+                //       ua.splice(0, ua.length);
+                //     }
+                //   }
+                // }
+
+                if(typeof fragment.userAnswer === 'object'){
+                    fragment.userAnswer = JSON.stringify(fragment.userAnswer);
+                } else {
+                    fragment.userAnswer = "" + fragment.userAnswer;
                 }
-
-                fragment.userAnswer = JSON.stringify(fragment.userAnswer);
-
               }
 
               if(!!fragment.vertical && typeof fragment.vertical === 'object'){
@@ -1256,7 +1259,7 @@
     overflow: hidden;
   }
 
-  
+
   .survey .survey-nav > ul li > a {
     margin-bottom: 10px;
     color: #222;

@@ -90,7 +90,7 @@
 
             <td class="option-score text-center" v-if="isScoreSingleChoice || isScoreMultipleChoice">
               <el-input v-model="item.score" style="width: 40px"/>
-              <el-checkbox v-model="ignoreScores[optionIndex]" @change="ignoreScore(item, optionIndex)">不记分</el-checkbox>
+              <el-checkbox v-model="ignoreScores[optionIndex]" @change="ignoreScore(item, optionIndex)" :true-label="1" :false-label="0">不记分</el-checkbox>
             </td>
 
             <td class="option-move">
@@ -130,7 +130,7 @@
           <el-select
             v-if="isMultipleChoice"
             v-model="question.minAnswer"
-            @change="changeMinAnswer"
+            @change="changeAnswer"
             style="width: 120px">
             <el-option label="至少选几项" value=""></el-option>
             <el-option v-for="(item, index) of question.answer"
@@ -142,7 +142,7 @@
           <el-select
             v-if="isMultipleChoice"
             v-model="question.maxAnswer"
-            @change="changeMinAnswer"
+            @change="changeAnswer"
             style="width: 120px">
             <el-option label="至多选几项" value=""></el-option>
             <template v-for="(item, index) of question.answer">
@@ -279,7 +279,7 @@
 
   </div>
 
-    
+
 </template>
 
 <script>
@@ -405,15 +405,17 @@
           /**
            * 至少选择
            */
-          changeMinAnswer: function(){
+          changeAnswer: function(){
 
-            if(this.question.minAnswer !== '' && this.question.maxAnswer === ''){
+              console.info(this.question);
+
+            if(!!this.question.minAnswer && !!!this.question.maxAnswer){
               this.$set(this.question, 'answerTip', '至少选择' + this.question.minAnswer + '项');
 
               return;
             }
 
-            if(this.question.maxAnswer !== '' && this.question.minAnswer === ''){
+            if(!!!this.question.minAnswer && !!this.question.maxAnswer){
               this.$set(this.question, 'answerTip', '至多选择' + this.question.maxAnswer + '项');
 
               return;
