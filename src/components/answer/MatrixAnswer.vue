@@ -282,7 +282,7 @@
                   // array
                   const item = this.question.userAnswer[i];
 
-                  if(item.length === 0){
+                  if(!!!item || item.length === 0){
                       flag = false;
                       break;
                   }

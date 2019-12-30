@@ -311,7 +311,7 @@ export default {
       remark: '',
       ssOrderNo: 0, // section排序
       requireAnswer: 1, // 需要回答
-      userAnswer: [], // 用户答案
+      userAnswer: ['', '', ''], // 用户答案
       dataRows: 1, // 多少行
       columns: 2, // 答案列数，1列代表每一个答案一行
       underlineStyle: 0,  // 是否使用下划线样式
@@ -386,7 +386,7 @@ export default {
           uniqueValue: 0, // 是否唯一
         }],
       vertical: ['行标题1', '行标题2'],
-      userAnswer: [[], []], // 用户答案
+      userAnswer: [["", "", ""], ["", "", ""]], // 用户答案
       columns: 2, // 答案列数，1列代表每一个答案一行
       underlineStyle: 0,  // 是否使用下划线样式
     }
@@ -432,7 +432,7 @@ export default {
       requireAnswer: 1, // 需要回答
       horizontal: ['列1', '列2', '列3'],
       vertical: ['行1', '行2'],
-      userAnswer: [[], []], // 用户答案
+      userAnswer: [], // 用户答案
     },
 
     // 矩阵多选

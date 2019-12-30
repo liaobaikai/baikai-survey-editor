@@ -625,7 +625,7 @@
          * 批量添加选项
          */
         addBatchOption: function(){
-          console.info(template);
+
         },
         /**
          * 添加选项

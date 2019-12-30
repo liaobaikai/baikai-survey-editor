@@ -1062,18 +1062,6 @@
             for(let fragment of section['fragments']){
 
               if(!!fragment.userAnswer){
-                // if(typeof fragment.userAnswer === 'string' || typeof fragment.userAnswer === 'number'){
-                //   fragment.userAnswer = '';
-                // } else if(typeof fragment.userAnswer === 'object'){
-                //   for(let ua of fragment.userAnswer){
-                //     if(typeof ua === 'string' || typeof ua === 'number'){
-                //       ua = '';
-                //     } else if(!!ua && typeof ua === 'object' && ua.length > 0){
-                //       // ua.length = 0;
-                //       ua.splice(0, ua.length);
-                //     }
-                //   }
-                // }
 
                 if(typeof fragment.userAnswer === 'object'){
                     fragment.userAnswer = JSON.stringify(fragment.userAnswer);

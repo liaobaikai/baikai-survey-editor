@@ -20,7 +20,7 @@
 
 
   </div>
-    
+
 </template>
 
 <script>
@@ -54,7 +54,7 @@
         },
 
         isScoreMatrix: function(){
-          return this.question.type === this.matrixQuestion.multiple.type;
+          return this.question.type === this.matrixQuestion.score.type;
         },
 
 
@@ -109,22 +109,24 @@
                 this.question.vertical.splice(i + 1, 0, verticals[i]);
               }
 
-              this.question.userAnswer.push([]);
+              if(this.question.type === this.matrixQuestion.multiple.type || this.question.type === this.matrixQuestion.score.type){
+                  this.question.userAnswer.push([]);
+              }
 
             }
 
           }
 
 
-          if(len < this.question.vertical.length){
+          if(len < this.question.vertical.length && (this.question.type === this.matrixQuestion.multiple.type || this.question.type === this.matrixQuestion.score.type)){
             // 删除后面的
             this.question.vertical.splice(len, (this.question.vertical.length - len));
           }
 
           if(len === 0){
-            this.question.vertical = JSON.parse(JSON.stringify(
+            this.$set(this.question, 'vertical', JSON.parse(JSON.stringify(
               this.isSingleMatrix ? this.matrixQuestion.single.vertical : this.matrixQuestion.multiple.vertical
-            ));
+            )));
             this.initVertical();
           }
 
@@ -164,9 +166,9 @@
           }
 
           if(len === 0){
-            this.question.horizontal = JSON.parse(JSON.stringify(
+            this.$set(this.question, 'horizontal',  JSON.parse(JSON.stringify(
               this.isSingleMatrix ? this.matrixQuestion.single.horizontal : this.matrixQuestion.multiple.horizontal
-            ));
+            )));
             this.initHorizontal();
           }
         }

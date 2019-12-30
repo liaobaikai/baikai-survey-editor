@@ -946,6 +946,24 @@
 
                         this.$set(this.question, 'userAnswer', array);
                         break;
+
+                    case this.matrixQuestion.single.type:
+                        this.$set(this.question, 'userAnswer', []);
+                        break;
+                    case this.matrixQuestion.multiple.type:
+                    case this.matrixQuestion.score.type:
+                    {
+                        let array = [];
+
+                        for(let i = 0; i < this.question.vertical.length; i++){
+                          array.push([]);
+                        }
+
+                        this.$set(this.question, 'userAnswer', array);
+
+                    }
+
+                        break;
                 }
 
                 //

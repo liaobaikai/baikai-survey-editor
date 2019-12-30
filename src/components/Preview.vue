@@ -206,7 +206,7 @@
             validFragment: function (fragment) {
                 this.$delete(fragment, 'invalid');
                 this.$delete(fragment, 'invalidMsg');
-
+                this.$set(fragment, 'completed', true);
             },
 
             /**
@@ -319,9 +319,30 @@
                                         }
                                     }
 
-                                    // 数字数组的话，则不用判断长度
-
+                                    // 数字数组的话
                                     if (typeof fragment.userAnswer[0] === 'number') {
+
+                                        // 判断是否是矩阵单选
+                                        if(fragment.type === this.questionTemplate.matrixQuestion.single.type){
+
+                                            let flag = false;
+                                            for(let x = 0; x < fragment.vertical.length; x++){
+                                                 if(!!!fragment.userAnswer[x] || fragment.userAnswer[x] instanceof Array){
+                                                     flag = true;
+                                                     break;
+                                                 }
+                                            }
+
+                                            if(!!flag){
+                                                this.invalidFragment(fragment);
+                                            } else {
+                                                this.validFragment(fragment);
+                                            }
+
+                                            break;
+                                        }
+
+
                                         this.validFragment(fragment);
 
                                         break;
@@ -340,8 +361,7 @@
                                     }
 
 
-                                    if (fragment.type === this.questionTemplate.matrixQuestion.single.type
-                                        || fragment.type === this.questionTemplate.matrixQuestion.multiple.type
+                                    if (fragment.type === this.questionTemplate.matrixQuestion.multiple.type
                                         || fragment.type === this.questionTemplate.matrixQuestion.score.type) {
 
                                         // 矩阵单选 & 矩阵多选
@@ -434,6 +454,7 @@
                 }
 
                 for (let f of fragments) {
+
                     if (!!f.invalid) {
 
                         let ele = document.getElementById('sq-' + f.id);
@@ -446,6 +467,7 @@
 
                         return false;
                     } else {
+
                         if (!!f['userAnswer'])
                             f['userAnswer2'] = JSON.stringify(f['userAnswer']);
                     }
@@ -489,6 +511,8 @@
             submit: function () {
 
                 if (!this.checkUserAnswer()) return;
+
+                console.info(this.survey);
 
                 this.$emit('submit', JSON.stringify(this.survey));
 

@@ -110,7 +110,7 @@ export const questions = {
   },
 
   mobile: {
-    name: '手机号码',
+    name: '手机号',
     title: '您的手机号码是？',
     answerTip: '',  // 答题提示
     dependent: '', // 依赖哪个题目的选项出现
