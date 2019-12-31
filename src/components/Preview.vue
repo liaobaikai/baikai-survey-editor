@@ -361,7 +361,26 @@
                                     }
 
 
-                                    if (fragment.type === this.questionTemplate.matrixQuestion.multiple.type
+                                    // 评分题
+                                    if(fragment.type === this.questionTemplate.scoreQuestion.single.type) {
+                                        // 单项评分题
+                                        if(fragment.userAnswer === 0){
+                                            this.invalidFragment(fragment);
+                                        } else {
+                                            this.validFragment(fragment);
+                                        }
+
+                                    } else if(fragment.type === this.questionTemplate.scoreQuestion.multiple.type){
+                                        // 多项评分题
+
+                                        let unselect = fragment.userAnswer.filter(item => item === 0);
+                                        if(unselect.length !== fragment.userAnswer.length){
+                                            this.invalidFragment(fragment);
+                                        } else {
+                                            this.validFragment(fragment);
+                                        }
+
+                                    } else if (fragment.type === this.questionTemplate.matrixQuestion.multiple.type
                                         || fragment.type === this.questionTemplate.matrixQuestion.score.type) {
 
                                         // 矩阵单选 & 矩阵多选
