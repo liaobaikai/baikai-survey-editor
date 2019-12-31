@@ -21,21 +21,14 @@
 
         <div class="question-content">
 
-          <div style="display: flex">
-
-            <template v-if="isQuestion">
-
+          <div style="display:flex;">
               <span
-                class="question-sequence" style="margin-right: 5px;"
-                v-if="showSequence">{{question.sequence}}. </span>
-
-            </template>
-
+                class="question-sequence" style="margin-right: 5px;" v-if="isQuestion"
+                v-show="showSequence">{{question.sequence}}. </span>
             <div class="title" v-html="question.title"></div>
-            <span style="color: #999; font-size: 14px;" v-if="question.answerTip">[{{question.answerTip}}]</span>
-
-
           </div>
+          <div style="color: #999; font-size: 14px;" v-if="question.answerTip">[{{question.answerTip}}]</div>
+
           <!--不是分页，段落的话，就显示-->
           <div class="remark"
                v-if="question.remark && isQuestion" v-html="question.remark"></div>
@@ -609,24 +602,24 @@
 
 
             /*重置问题类型*/
-            resetUserAnswer: function(q){
+            resetUserAnswer: function (q) {
 
                 console.info('resetUserAnswer', q);
 
-                if(q.type === this.scoreQuestion.single.type){
+                if (q.type === this.scoreQuestion.single.type) {
                     this.$set(q, 'userAnswer', 0);
-                } else if(typeof q.userAnswer === 'string'){
+                } else if (typeof q.userAnswer === 'string') {
                     this.$set(q, 'userAnswer', '');
-                } else if(q.userAnswer instanceof Array){
+                } else if (q.userAnswer instanceof Array) {
 
-                    if(q.userAnswer[0] instanceof Array){
+                    if (q.userAnswer[0] instanceof Array) {
 
-                        if(q.type === this.completionQuestion.table.type){
+                        if (q.type === this.completionQuestion.table.type) {
 
                             let array = [];
-                            for(let i = 0; i < q.userAnswer.length; i++){
+                            for (let i = 0; i < q.userAnswer.length; i++) {
                                 array[i] = [];
-                                for(let j = 0; j < q.answer.length; j++){
+                                for (let j = 0; j < q.answer.length; j++) {
                                     array[i][j] = '';
                                 }
 
@@ -636,7 +629,7 @@
 
                         } else {
 
-                            for(let item of q.userAnswer){
+                            for (let item of q.userAnswer) {
                                 item.splice(0, item.length);
                             }
 
@@ -645,13 +638,13 @@
 
                     } else {
 
-                        if(q.type === this.scoreQuestion.multiple.type || q.type === 8){
+                        if (q.type === this.scoreQuestion.multiple.type || q.type === 8) {
 
-                            for(let i = 0; i < q.userAnswer.length; i++){
+                            for (let i = 0; i < q.userAnswer.length; i++) {
 
-                                if(q.type === this.scoreQuestion.multiple.type){
+                                if (q.type === this.scoreQuestion.multiple.type) {
                                     q.userAnswer[i] = 0;
-                                } else if(q.type === this.completionQuestion.matrix.type){
+                                } else if (q.type === this.completionQuestion.matrix.type) {
                                     q.userAnswer[i] = '';
                                 }
                             }
@@ -901,14 +894,14 @@
                         // 添加矩阵answer
                         this.$set(this.question, 'answer', this.completionQuestion.matrix.answer);
 
-                        {
-                            let array = [];
-                            for(let i = 0; i < this.question.answer.length; i++){
-                                array[i] = '';
-                            }
-
-                            this.$set(this.question, 'userAnswer', array);
+                    {
+                        let array = [];
+                        for (let i = 0; i < this.question.answer.length; i++) {
+                            array[i] = '';
                         }
+
+                        this.$set(this.question, 'userAnswer', array);
+                    }
 
                         break;
                     case this.completionQuestion.table.type:
@@ -916,17 +909,17 @@
                         this.$set(this.question, 'answer', this.completionQuestion.table.answer);
                         this.$set(this.question, 'vertical', this.completionQuestion.table.vertical);
 
-                        {
-                            let array = [];
-                            for(let i = 0; i < this.question.vertical.length; i++){
-                                array[i] = [];
-                                for(let j = 0; j < this.question.horizontal.length; j++){
-                                    array[i][j] = "";
-                                }
+                    {
+                        let array = [];
+                        for (let i = 0; i < this.question.vertical.length; i++) {
+                            array[i] = [];
+                            for (let j = 0; j < this.question.horizontal.length; j++) {
+                                array[i][j] = "";
                             }
-
-                            this.$set(this.question, 'userAnswer', array);
                         }
+
+                        this.$set(this.question, 'userAnswer', array);
+                    }
 
                         break;
                     case this.scoreQuestion.single.type:
@@ -951,12 +944,11 @@
                         this.$set(this.question, 'userAnswer', []);
                         break;
                     case this.matrixQuestion.multiple.type:
-                    case this.matrixQuestion.score.type:
-                    {
+                    case this.matrixQuestion.score.type: {
                         let array = [];
 
-                        for(let i = 0; i < this.question.vertical.length; i++){
-                          array.push([]);
+                        for (let i = 0; i < this.question.vertical.length; i++) {
+                            array.push([]);
                         }
 
                         this.$set(this.question, 'userAnswer', array);

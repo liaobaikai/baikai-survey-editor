@@ -210,6 +210,30 @@
             },
 
             /**
+             * 验证填空题
+             */
+            checkCompletionQuestion(fragment, userAnswer, answerObj){
+
+                let len = userAnswer.length;
+                if(!!answerObj.dataMin && len < answerObj.dataMin){
+                    this.invalidFragment(fragment, '至少填写' + answerObj.dataMin + '个字符！');
+                    return false;
+                } else if(!!answerObj.dataMax && len > answerObj.dataMax){
+                    this.invalidFragment(fragment, '至多填写' + answerObj.dataMax + '个字符！');
+                    return false;
+                } else if(len < 1){
+                    // 默认最少一个字符
+                    this.invalidFragment(fragment);
+                    return false;
+                }
+
+                // 符合。
+                this.validFragment(fragment);
+                return true;
+
+            },
+
+            /**
              * 检查用户答案
              */
             checkUserAnswer: function () {
@@ -217,17 +241,14 @@
                 // 检查题目的答案
                 let fragments = this.survey.sections[this.currentPage - 1]['fragments'];
 
+
                 for (let index = 0; index < fragments.length; index++) {
 
                     let fragment = fragments[index];
 
                     // 跳转隐藏的，可以忽略
                     if (!!fragment['hide']) {
-
-                        console.info('preview.hide', fragment);
-
                         this.hideCausedBy = fragment['hideCausedBy'];
-
                         continue;
                     }
                     // 有依赖的问题，可以忽略
@@ -250,225 +271,329 @@
 
                     if (!!!this.validation) continue;
 
-                    switch (typeof fragment.userAnswer) {
-                        case 'string':
-                            // 字符串
-                            if (!!fragment.userAnswer) {
-                                //
-                                this.validFragment(fragment);
 
+                    let selected, len = 0, flag = false;
+                    switch (fragment.type) {
+                        case this.questionTemplate.completionQuestion.single.type:
+                            // 单项填空题
+                            // ''
+                            this.checkCompletionQuestion(fragment, fragment.userAnswer || '', fragment);
+                            break;
+                        case this.questionTemplate.completionQuestion.matrix.type:
+                            // 矩阵填空
+                            // ['', '', '']
+                            //
+                            len = fragment.answer.length;
+                            for(let i = 0; i < len; i++){
+                                let answerObj = fragment.answer[i];
+                                let answer = fragment.userAnswer[i] || '';
 
-                            } else {
-                                this.invalidFragment(fragment);
-
+                                if(!this.checkCompletionQuestion(fragment, answer, answerObj)){
+                                    break;
+                                }
                             }
                             break;
-                        case 'number':
-                            // 数字
-                            if (!!fragment.userAnswer) {
-                                //
+                        case this.questionTemplate.completionQuestion.table.type:
+                            // 表格填空
+                            len = fragment.vertical.length;
+                            const len2 = fragment.answer.length;
 
-                                this.validFragment(fragment);
+                            for(let i = 0; i < len; i++){
+                                if(flag){
+                                    break;
+                                }
+                                let answerObj = fragment.answer[i];
+                                let userAnswer = fragment.userAnswer[i];
 
-
-                            } else {
-                                this.invalidFragment(fragment);
-
-                            }
-                            break;
-                        case 'object':
-                            // 数组
-                            if (!!fragment.userAnswer) {
-                                //
-
-                                let len = fragment.userAnswer.length;
-
-                                // 没选择
-                                if (len === 0) {
-                                    this.invalidFragment(fragment);
-
-                                } else {
-                                    // 有选择，但不符合
-
-                                    if (!!fragment.minAnswer) {
-                                        // 最小选择
-                                        if (len < fragment.minAnswer) {
-
-                                            this.invalidFragment(fragment, '至少选择' + fragment.minAnswer + '个选项！');
-                                            continue;
-
-
-                                        } else {
-                                            this.validFragment(fragment);
-
-
-                                        }
-                                    }
-
-                                    if (!!fragment.maxAnswer) {
-                                        // 最多选择
-                                        if (len > fragment.maxAnswer) {
-                                            this.invalidFragment(fragment, '至多选择' + fragment.maxAnswer + '个选项！');
-                                            continue;
-
-
-                                        } else {
-                                            this.validFragment(fragment);
-
-
-                                        }
-                                    }
-
-                                    // 数字数组的话
-                                    if (typeof fragment.userAnswer[0] === 'number') {
-
-                                        // 判断是否是矩阵单选
-                                        if(fragment.type === this.questionTemplate.matrixQuestion.single.type){
-
-                                            let flag = false;
-                                            for(let x = 0; x < fragment.vertical.length; x++){
-                                                 if(!!!fragment.userAnswer[x] || fragment.userAnswer[x] instanceof Array){
-                                                     flag = true;
-                                                     break;
-                                                 }
-                                            }
-
-                                            if(!!flag){
-                                                this.invalidFragment(fragment);
-                                            } else {
-                                                this.validFragment(fragment);
-                                            }
-
+                                for(let j = 0; j < len2; j++){
+                                    if(userAnswer && typeof userAnswer === 'object'){
+                                        if(!this.checkCompletionQuestion(fragment, userAnswer[j] || '', answerObj)){
+                                            flag = true;
                                             break;
                                         }
-
-
-                                        this.validFragment(fragment);
-
-                                        break;
                                     }
-
-
-                                    let columns = 0, rows = 0;
-                                    if (!!fragment.answer) {
-                                        columns = fragment.answer.length;
-                                    } else if (!!fragment.horizontal) {
-                                        columns = fragment.horizontal.length;
-                                    }
-
-                                    if (!!fragment.vertical) {
-                                        rows = fragment.vertical.length;
-                                    }
-
-
-                                    // 评分题
-                                    if(fragment.type === this.questionTemplate.scoreQuestion.single.type) {
-                                        // 单项评分题
-                                        if(fragment.userAnswer === 0){
-                                            this.invalidFragment(fragment);
-                                        } else {
-                                            this.validFragment(fragment);
-                                        }
-
-                                    } else if(fragment.type === this.questionTemplate.scoreQuestion.multiple.type){
-                                        // 多项评分题
-
-                                        let unselect = fragment.userAnswer.filter(item => item === 0);
-                                        if(unselect.length !== fragment.userAnswer.length){
-                                            this.invalidFragment(fragment);
-                                        } else {
-                                            this.validFragment(fragment);
-                                        }
-
-                                    } else if (fragment.type === this.questionTemplate.matrixQuestion.multiple.type
-                                        || fragment.type === this.questionTemplate.matrixQuestion.score.type) {
-
-                                        // 矩阵单选 & 矩阵多选
-
-                                        for (let i = 0; i < rows; i++) {
-
-                                            try {
-
-                                                let result = fragment.userAnswer[i];
-
-                                                if (!!!result || !!!result.length) {
-                                                    this.invalidFragment(fragment);
-                                                } else {
-
-                                                    if (fragment.type === this.questionTemplate.matrixQuestion.score.type
-                                                        && result.length !== columns) {
-                                                        this.invalidFragment(fragment);
-                                                    } else {
-                                                        this.validFragment(fragment);
-                                                    }
-
-                                                }
-
-                                            } catch (e) {
-                                                this.invalidFragment(fragment);
-                                            }
-                                        }
-
-
-                                    } else {
-
-                                        for (let i = 0; i < columns; i++) {
-
-                                            for (let j = 0; j < rows; j++) {
-
-                                                try {
-
-
-                                                    let result = fragment.userAnswer[j][i];
-
-
-                                                    if (!!!result || !!!result.length) {
-                                                        this.invalidFragment(fragment);
-
-                                                    } else {
-                                                        this.validFragment(fragment);
-
-                                                    }
-                                                } catch (e) {
-                                                    this.invalidFragment(fragment);
-
-                                                }
-
-                                            }
-
-                                            if (rows > 0) continue;
-
-
-                                            try {
-
-
-                                                if (!!!fragment.userAnswer[i]
-                                                    || !!!fragment.userAnswer[i].length) {
-                                                    this.invalidFragment(fragment);
-
-                                                } else {
-                                                    this.validFragment(fragment);
-
-                                                }
-                                            } catch (e) {
-                                                this.invalidFragment(fragment);
-
-                                            }
-
-                                        }
-
-                                    }
-
                                 }
+                            }
 
+                            break;
+
+                        case this.questionTemplate.choiceQuestion.single.type:
+                        case this.questionTemplate.choiceQuestion.list.type:
+                        case this.questionTemplate.choiceQuestion.scoreSingle.type:
+                            case this.questionTemplate.scoreQuestion.single.type:
+                            // 单项选择题、下拉题、评分单选、单项评分
+                            // ''
+                            if(parseInt(fragment.userAnswer || 0) > 0){
+                                this.validFragment(fragment);
                             } else {
                                 this.invalidFragment(fragment);
+                            }
+                            break;
+                        case this.questionTemplate.choiceQuestion.multiple.type:
+                        case this.questionTemplate.choiceQuestion.scoreMultiple.type:
+                        case this.questionTemplate.others.sort.type:
+                            // 多项选择题
+                            // 评分多选
+                            // 排序题
 
+                            // []
+                            // !!最小，最大选择
+
+                            selected = fragment.userAnswer.filter(item => typeof item === 'number' && item > 0);
+                            if(!!fragment.minAnswer && selected.length < fragment.minAnswer){
+                                // 小于最小值
+                                this.invalidFragment(fragment, '至少选择' + fragment.minAnswer + '个选项！');
+                            } else if(!!fragment.maxAnswer && selected.length > fragment.maxAnswer){
+                                this.invalidFragment(fragment, '至多选择' + fragment.maxAnswer + '个选项！');
+                            } else if(selected.length < 1){
+                                // 默认至少选中一项、
+                                this.invalidFragment(fragment);
+                            } else {
+                                // 有效的
+                                this.validFragment(fragment);
+                            }
+
+                            break;
+                        case this.questionTemplate.matrixQuestion.single.type:
+                            // 矩阵单选
+                            // []
+                            selected = fragment.userAnswer.filter(item => typeof item === 'number' && item > 0);
+                            if (selected.length !== fragment.vertical.length) {
+                                this.invalidFragment(fragment);
+                            } else {
+                                this.validFragment(fragment);
+                            }
+                            break;
+
+                        case this.questionTemplate.scoreQuestion.multiple.type:
+                            // 多项评分题
+                            // [0, 0]
+                            selected = fragment.userAnswer.filter(item => item > 0);
+                            if (selected.length !== fragment.vertical.length) {
+                                this.invalidFragment(fragment);
+                            } else {
+                                this.validFragment(fragment);
+                            }
+                            break;
+                        case this.questionTemplate.matrixQuestion.multiple.type:
+                            // 矩阵多选
+                            // [[1,2,3,4], [1,2,3,4]]
+                        case this.questionTemplate.matrixQuestion.score.type:
+                            // 矩阵评分
+                            // [[1,4,5,5,5], [5,5,5,5,5]]
+                            len = fragment.vertical.length;
+                            for(let i = 0; i < len; i++){
+                                let answer = fragment.userAnswer[i];
+                                selected = answer.filter(item => item > 0);
+                                if (selected.length !== fragment.horizontal.length) {
+                                    this.invalidFragment(fragment);
+                                    break;
+                                } else {
+                                    this.validFragment(fragment);
+                                }
                             }
 
                             break;
 
                     }
+
+
+                    // switch (typeof fragment.userAnswer) {
+                    //     case 'string':
+                    //         // 字符串
+                    //         if (!!fragment.userAnswer) {
+                    //             this.validFragment(fragment);
+                    //         } else {
+                    //             this.invalidFragment(fragment);
+                    //         }
+                    //         break;
+                    //     case 'number':
+                    //         // 数字
+                    //         if (fragment.userAnswer > 0) {
+                    //             this.validFragment(fragment);
+                    //         } else {
+                    //             this.invalidFragment(fragment);
+                    //         }
+                    //         break;
+                    //     case 'object':
+                    //         // 数组
+                    //         if (!!fragment.userAnswer) {
+                    //             let len = fragment.userAnswer.length;
+                    //             // 没选择
+                    //             if (len === 0) {
+                    //                 this.invalidFragment(fragment);
+                    //             } else {
+                    //                 // 有选择，但不符合
+                    //                 if (!!fragment.minAnswer) {
+                    //                     // 最小选择
+                    //                     if (len < fragment.minAnswer) {
+                    //                         this.invalidFragment(fragment, '至少选择' + fragment.minAnswer + '个选项！');
+                    //                         break;
+                    //                     } else {
+                    //                         this.validFragment(fragment);
+                    //                     }
+                    //                 }
+                    //
+                    //                 if (!!fragment.maxAnswer) {
+                    //                     // 最多选择
+                    //                     if (len > fragment.maxAnswer) {
+                    //                         this.invalidFragment(fragment, '至多选择' + fragment.maxAnswer + '个选项！');
+                    //                         break;
+                    //                     } else {
+                    //                         this.validFragment(fragment);
+                    //                     }
+                    //                 }
+                    //
+                    //
+                    //                 // if (typeof fragment.userAnswer[0] === 'number') {
+                    //                 //
+                    //                 //     // 判断是否是矩阵单选
+                    //                 //     if(fragment.type === this.questionTemplate.matrixQuestion.single.type){
+                    //                 //
+                    //                 //         let flag = false;
+                    //                 //         for(let x = 0; x < fragment.vertical.length; x++){
+                    //                 //              if(!!!fragment.userAnswer[x] || fragment.userAnswer[x] instanceof Array){
+                    //                 //                  flag = true;
+                    //                 //                  break;
+                    //                 //              }
+                    //                 //         }
+                    //                 //
+                    //                 //         if(!!flag){
+                    //                 //             this.invalidFragment(fragment);
+                    //                 //         } else {
+                    //                 //             this.validFragment(fragment);
+                    //                 //         }
+                    //                 //
+                    //                 //         break;
+                    //                 //     }
+                    //                 //
+                    //                 //
+                    //                 //     this.validFragment(fragment);
+                    //                 //
+                    //                 //     break;
+                    //                 // }
+                    //
+                    //
+                    //                 let columns = 0, rows = 0;
+                    //                 if (!!fragment.answer) {
+                    //                     columns = fragment.answer.length;
+                    //                 } else if (!!fragment.horizontal) {
+                    //                     columns = fragment.horizontal.length;
+                    //                 }
+                    //
+                    //                 if (!!fragment.vertical) {
+                    //                     rows = fragment.vertical.length;
+                    //                 }
+                    //
+                    //
+                    //                 // 评分题
+                    //                 if (fragment.type === this.questionTemplate.scoreQuestion.single.type) {
+                    //                     // 单项评分题
+                    //                     if (fragment.userAnswer === 0) {
+                    //                         this.invalidFragment(fragment);
+                    //                     } else {
+                    //                         this.validFragment(fragment);
+                    //                     }
+                    //
+                    //                 } else if (fragment.type === this.questionTemplate.scoreQuestion.multiple.type) {
+                    //                     // 多项评分题
+                    //
+                    //                     let unselect = fragment.userAnswer.filter(item => item === 0);
+                    //                     if (unselect.length !== fragment.userAnswer.length) {
+                    //                         this.invalidFragment(fragment);
+                    //                     } else {
+                    //                         this.validFragment(fragment);
+                    //                     }
+                    //
+                    //                 } else if (fragment.type === this.questionTemplate.matrixQuestion.multiple.type
+                    //                     || fragment.type === this.questionTemplate.matrixQuestion.score.type) {
+                    //
+                    //                     // 矩阵单选 & 矩阵多选
+                    //
+                    //                     for (let i = 0; i < rows; i++) {
+                    //
+                    //                         try {
+                    //
+                    //                             let result = fragment.userAnswer[i];
+                    //
+                    //                             if (!!!result || !!!result.length) {
+                    //                                 this.invalidFragment(fragment);
+                    //                             } else {
+                    //
+                    //                                 if (fragment.type === this.questionTemplate.matrixQuestion.score.type
+                    //                                     && result.length !== columns) {
+                    //                                     this.invalidFragment(fragment);
+                    //                                 } else {
+                    //                                     this.validFragment(fragment);
+                    //                                 }
+                    //
+                    //                             }
+                    //
+                    //                         } catch (e) {
+                    //                             this.invalidFragment(fragment);
+                    //                         }
+                    //                     }
+                    //
+                    //
+                    //                 } else {
+                    //
+                    //                     for (let i = 0; i < columns; i++) {
+                    //
+                    //                         for (let j = 0; j < rows; j++) {
+                    //
+                    //                             try {
+                    //
+                    //
+                    //                                 let result = fragment.userAnswer[j][i];
+                    //
+                    //
+                    //                                 if (!!!result || !!!result.length) {
+                    //                                     this.invalidFragment(fragment);
+                    //
+                    //                                 } else {
+                    //                                     this.validFragment(fragment);
+                    //
+                    //                                 }
+                    //                             } catch (e) {
+                    //                                 this.invalidFragment(fragment);
+                    //
+                    //                             }
+                    //
+                    //                         }
+                    //
+                    //                         if (rows > 0) continue;
+                    //
+                    //
+                    //                         try {
+                    //
+                    //
+                    //                             if (!!!fragment.userAnswer[i]
+                    //                                 || !!!fragment.userAnswer[i].length) {
+                    //                                 this.invalidFragment(fragment);
+                    //
+                    //                             } else {
+                    //                                 this.validFragment(fragment);
+                    //
+                    //                             }
+                    //                         } catch (e) {
+                    //                             this.invalidFragment(fragment);
+                    //
+                    //                         }
+                    //
+                    //                     }
+                    //
+                    //                 }
+                    //
+                    //             }
+                    //
+                    //         } else {
+                    //             this.invalidFragment(fragment);
+                    //
+                    //         }
+                    //
+                    //         break;
+                    //
+                    // }
 
                 }
 
@@ -501,7 +626,7 @@
 
                 if (!this.checkUserAnswer()) return;
 
-                if(this.hideCausedBy === 'finish' || this.hideCausedBy === 'discard'){
+                if (this.hideCausedBy === 'finish' || this.hideCausedBy === 'discard') {
 
                     this.currentPage = this.survey.sections.length;
                     this.$emit('next-page', this.currentPage);
