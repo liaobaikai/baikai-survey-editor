@@ -241,59 +241,59 @@
 
       <div class="question-info" v-if="isQuestion">
         <!-- 问题类型，是否必答，填写提示 -->
-        <span class="title">题型</span>
-        <el-select
-          v-model="question.type"
-          @change="onChangeQuestionType">
+        <span class="title" v-show="question.name">题型: {{question.name}}</span>
+<!--        <el-select-->
+<!--          v-model="question.type"-->
+<!--          @change="onChangeQuestionType">-->
 
-          <!-- 选择题 -->
-          <template v-if="isChoiceQuestion">
-            <el-option
-              v-for="item in choiceQuestion"
-              :key="item.name"
-              :label="item.name"
-              :value="item.type"></el-option>
-          </template>
-          <!-- 填空题 -->
-          <template v-if="isCompletionQuestion">
-            <el-option
-              v-for="item in completionQuestion"
-              :key="item.name"
-              :label="item.name"
-              :value="item.type"></el-option>
-          </template>
+<!--          &lt;!&ndash; 选择题 &ndash;&gt;-->
+<!--          <template v-if="isChoiceQuestion">-->
+<!--            <el-option-->
+<!--              v-for="item in choiceQuestion"-->
+<!--              :key="item.name"-->
+<!--              :label="item.name"-->
+<!--              :value="item.type"></el-option>-->
+<!--          </template>-->
+<!--          &lt;!&ndash; 填空题 &ndash;&gt;-->
+<!--          <template v-if="isCompletionQuestion">-->
+<!--            <el-option-->
+<!--              v-for="item in completionQuestion"-->
+<!--              :key="item.name"-->
+<!--              :label="item.name"-->
+<!--              :value="item.type"></el-option>-->
+<!--          </template>-->
 
-          <!-- 矩阵题 -->
-          <template v-if="isMatrixQuestion">
-            <el-option
-              v-for="item in matrixQuestion"
-              :key="item.name"
-              :label="item.name"
-              :value="item.type"></el-option>
-            <!-- 表格填空 -->
-            <!--<el-option :tag="completionQuestion.table.name" :value="completionQuestion.table.type"></el-option>-->
-          </template>
+<!--          &lt;!&ndash; 矩阵题 &ndash;&gt;-->
+<!--          <template v-if="isMatrixQuestion">-->
+<!--            <el-option-->
+<!--              v-for="item in matrixQuestion"-->
+<!--              :key="item.name"-->
+<!--              :label="item.name"-->
+<!--              :value="item.type"></el-option>-->
+<!--            &lt;!&ndash; 表格填空 &ndash;&gt;-->
+<!--            &lt;!&ndash;<el-option :tag="completionQuestion.table.name" :value="completionQuestion.table.type"></el-option>&ndash;&gt;-->
+<!--          </template>-->
 
-          <!-- 评分题 -->
-          <template v-if="isScoreQuestion">
-            <el-option
-              v-for="item in scoreQuestion"
-              :key="item.name"
-              :label="item.name"
-              :value="item.type"></el-option>
-          </template>
+<!--          &lt;!&ndash; 评分题 &ndash;&gt;-->
+<!--          <template v-if="isScoreQuestion">-->
+<!--            <el-option-->
+<!--              v-for="item in scoreQuestion"-->
+<!--              :key="item.name"-->
+<!--              :label="item.name"-->
+<!--              :value="item.type"></el-option>-->
+<!--          </template>-->
 
-          <!-- 其他题型，排序题 -->
-          <template v-if="isOthers">
-            <el-option
-              v-for="item in others"
-              :key="item.name"
-              :label="item.name"
-              :value="item.type"></el-option>
-          </template>
+<!--          &lt;!&ndash; 其他题型，排序题 &ndash;&gt;-->
+<!--          <template v-if="isOthers">-->
+<!--            <el-option-->
+<!--              v-for="item in others"-->
+<!--              :key="item.name"-->
+<!--              :label="item.name"-->
+<!--              :value="item.type"></el-option>-->
+<!--          </template>-->
 
 
-        </el-select>
+<!--        </el-select>-->
 
         <el-checkbox
           style="margin-left: 1rem;"
