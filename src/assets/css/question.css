@@ -286,6 +286,10 @@ table {
   margin: 0.5rem 1.2rem 1rem 1.2rem;
 }
 
+.answer-item-wrapper .description img{
+  width: 100%;
+}
+
 .answer-item-wrapper.img-desc{
   border: 1px solid #ddd;
   padding: 5px;
