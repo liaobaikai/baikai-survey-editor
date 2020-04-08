@@ -1,11 +1,10 @@
 <template>
 
   <span>
-    <el-link
+    <span
       :type="!!question.remark ? 'primary' : ''"
-      :underline="false"
       @click="editQuestionRemark"
-      style="text-decoration: underline; color: #666;">填写提示</el-link>
+      style="color: #666; font-size: 14px; cursor: pointer; text-decoration: underline">填写提示</span>
     <!-- 填写提示、问题备注 -->
     <el-dialog
       title="填写提示"
@@ -20,7 +19,7 @@
           <!--ref="descriptionQuillEditor"-->
           <!--:options="editorOption"></quill-editor>-->
 
-        <my-quill-editor class="dialog-quill-editor" v-model="remark" @change="onChange" @upload-file="onUploadFile"></my-quill-editor>
+        <my-quill-editor class="dialog-quill-editor" v-model="remark" @change="onChange" @upload-file="onUploadFile"/>
 
       </div>
       <span slot="footer" class="dialog-footer">

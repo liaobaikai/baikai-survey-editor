@@ -24,7 +24,7 @@
           <template v-for="(item, index) in question.answer">
             <li class="answer-item-wrapper ql-snow"
                 v-if="(page - 1) * question.columns <= index && index < page * question.columns"
-                :style="{ width: (100 / question.columns) + '%'}">
+                :style="{ width: (100 / question.columns) + '%', display: item.complete ? 'flex': 'block'}">
 
               <div v-if="item.description && item.image">
 

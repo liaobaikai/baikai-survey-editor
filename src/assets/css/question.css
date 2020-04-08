@@ -260,6 +260,7 @@ table {
 
 /*答案允许填空*/
 .answer-item-wrapper {
+  display: flex;
 }
 
 .answer-item-wrapper .complete{
@@ -373,6 +374,13 @@ textarea {
 .options table td.option-move,
 .options table td.option-complete{
   width: 10%;
+}
+
+.options table td.option-checked>div,
+.options table td.option-complete>div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .options table td.option-correct,

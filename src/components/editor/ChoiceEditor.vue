@@ -66,13 +66,12 @@
                     :true-label="1" :false-label="0"/>
 
                 <!-- 如果允许填空的话，则需要显示是否为必填 -->
-                <span v-if="item.complete">
-                  |
+                <span v-if="item.complete" style="border-left: 1px solid #aaa; display: flex; align-items: center; margin-left: 5px; padding-left: 5px;">
                   <el-checkbox
                     v-model="item.requireComplete"
                     @change="requireComplete(item, optionIndex)"
                     :true-label="1" :false-label="0"/>
-                  <span>必填</span>
+                  <span style="margin-left: 2px; font-size: 11px;">必填</span>
                 </span>
               </div>
             </td>

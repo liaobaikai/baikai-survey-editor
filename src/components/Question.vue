@@ -50,7 +50,7 @@
           :sections="sections"
           :question="question"
           :readonly="readonly"
-          :editable="editable"></choice-answer>
+          :editable="editable"/>
 
 
         <!-- 填空题 -->
@@ -62,7 +62,7 @@
           :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
-          :editable="editable"></completion-answer>
+          :editable="editable"/>
 
         <!-- 矩阵题 -->
         <matrix-answer
@@ -73,7 +73,7 @@
           :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
-          :editable="editable"></matrix-answer>
+          :editable="editable"/>
 
         <!-- 评分题 -->
         <score-answer
@@ -84,7 +84,7 @@
           :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
-          :editable="editable"></score-answer>
+          :editable="editable"/>
 
         <!--其他题型-->
         <other-answer
@@ -95,7 +95,7 @@
           :sections="sections"
           :readonly="readonly"
           @change-value="onChangeValue"
-          :editable="editable"></other-answer>
+          :editable="editable"/>
 
 
         <!-- 题目依赖提示 -->
@@ -147,7 +147,7 @@
       </div>
 
       <el-alert v-if="!!question.invalid && !!question['invalidMsg']" :closable="false" :title="question['invalidMsg']"
-                type="error"></el-alert>
+                type="error"/>
 
       <div v-if="editable && !!!question.editing" class="tool-bar">
 
@@ -220,8 +220,8 @@
     <div class="question-editor" v-if="editable && !!question.editing">
 
       <div style="position:relative; text-align: left; margin-left: 2rem">
-        <span class="triangle-up-outline"></span>
-        <span class="triangle-up"></span>
+        <span class="triangle-up-outline"/>
+        <span class="triangle-up"/>
       </div>
 
       <!-- 标题编辑 -->
@@ -236,10 +236,10 @@
         v-model="question.title"
         style="margin-top: 10px"
         @change="onTitleChange"
-        @upload-file="onUploadFile"></my-quill-editor>
+        @upload-file="onUploadFile"/>
 
 
-      <div class="question-info" v-if="isQuestion">
+      <div class="question-info" v-if="isQuestion" style="display:flex; align-items: center">
         <!-- 问题类型，是否必答，填写提示 -->
         <span class="title" v-show="question.name">题型: {{question.name}}</span>
 <!--        <el-select-->
@@ -296,13 +296,13 @@
 <!--        </el-select>-->
 
         <el-checkbox
-          style="margin-left: 1rem;"
+          style="margin: 0 1rem;"
           v-model="question.requireAnswer"
           :false-label="0" :true-label="1">必答
         </el-checkbox>
 
         <!-- 备注对话框 -->
-        <remark-dialog :question="question" @upload-file="onUploadFile"></remark-dialog>
+        <remark-dialog :question="question" @upload-file="onUploadFile"/>
 
       </div>
 
@@ -311,25 +311,25 @@
         v-if="isChoiceQuestion || isSortQuestion"
         :question="question"
         :sections="sections"
-        @upload-file="onUploadFile"></choice-editor>
+        @upload-file="onUploadFile"/>
 
       <!-- 填空题 -->
       <completion-editor
         v-if="isCompletionQuestion"
         :question="question"
-        :sections="sections"></completion-editor>
+        :sections="sections"/>
 
       <!-- 矩阵题 -->
       <matrix-editor
         v-if="isMatrixQuestion && !isMatrixTableQuestion"
         :question="question"
-        :sections="sections"></matrix-editor>
+        :sections="sections"/>
 
       <!-- 评分题, 单项，多项 -->
       <score-editor
         v-if="isScoreQuestion"
         :question="question"
-        :sections="sections"></score-editor>
+        :sections="sections"/>
 
 
       <!-- 逻辑设置 -->
@@ -338,10 +338,10 @@
         <span class="title">逻辑设置：</span>
 
         <dependent-dialog :question="question"
-                          :sections="sections"></dependent-dialog>
+                          :sections="sections"/>
         <forward-dialog :question="question" v-if="isQuestion"
                         :sections="sections"
-                        :isSingleChoiceQuestion="isSingleChoiceQuestion"></forward-dialog>
+                        :isSingleChoiceQuestion="isSingleChoiceQuestion"/>
 
         <!--<el-link icon="el-icon-paperclip">选项关联</el-link>-->
 
